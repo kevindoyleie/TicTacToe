@@ -1,6 +1,5 @@
 package tictactoe.game;
 
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,6 +9,8 @@ import tictactoe.game.entity.Game.PlayerNumber;
 import tictactoe.game.entity.Game.PlayerType;
 import tictactoe.game.entity.GameRepository;
 import tictactoe.user.entity.AppUser;
+
+import java.util.List;
 
 import static tictactoe.game.BoardUtil.getAllPossibleLines;
 
@@ -106,12 +107,30 @@ public class GameService {
      * @param rows the rows that make up a game.
      * @return {@link GameState}, PLAYER_1_WIN, PLAYER_2_WIN, IN_PROGRESS, DRAW
      */
-    private GameState evaluateGameState(List<List<String>> rows) {
-        // Get all possible lines
+    private GameState evaluateGameState(List<List<String>> rows)
+    {
         final List<List<String>> lines = getAllPossibleLines(rows);
 
-        // todo - For the given lines, try to establish the correct game state to return
+        for (List<String> line : lines) {
+            String firstTile = line.get(0);
+            if (firstTile.isEmpty())
+                continue;
 
-        return null;
+            if (weHaveAWinner(line, firstTile)) {
+                for (String tile : line)
+                    if (tile.equals(firstTile))
+                        return firstTile.equals(BoardTile.X.toString()) ? GameState.PLAYER_1_WIN : GameState.PLAYER_2_WIN;
+            }
+        }
+
+        for (List<String> row : rows)
+            if (row.stream().anyMatch(String::isEmpty))
+                return GameState.IN_PROGRESS;
+
+        return GameState.DRAW; // no connected lines for a winner AND all tiles are taken
+    }
+
+    private boolean weHaveAWinner(List<String> line, String firstTile) {
+        return line.stream().allMatch(tile -> tile.equals(firstTile));
     }
 }

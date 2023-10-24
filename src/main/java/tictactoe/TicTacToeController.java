@@ -1,6 +1,5 @@
 package tictactoe;
 
-import java.security.Principal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
@@ -9,11 +8,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import tictactoe.game.ComputerPlayerService;
-import tictactoe.user.entity.AppUser;
-import tictactoe.user.entity.AppUserRepository;
+import tictactoe.game.GameService;
 import tictactoe.game.entity.Game;
 import tictactoe.game.entity.Game.PlayerType;
-import tictactoe.game.GameService;
+import tictactoe.user.entity.AppUser;
+import tictactoe.user.entity.AppUserRepository;
+
+import java.security.Principal;
 
 @Controller
 public class TicTacToeController {

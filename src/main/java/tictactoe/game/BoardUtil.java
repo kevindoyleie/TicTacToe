@@ -1,6 +1,7 @@
 package tictactoe.game;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 class BoardUtil {
@@ -33,16 +34,28 @@ class BoardUtil {
      *         ]
      * @return all possible lines of strings through the game board.
      */
-    public static List<List<String>> getAllPossibleLines(List<List<String>> gameRows) {
+    public static List<List<String>> getAllPossibleLines(List<List<String>> gameRows)
+    {
         final List<List<String>> allPossibleLines = new ArrayList<>();
 
-        // todo - add all rows
+        // add all rows
+        for (int rowIndex = 0; rowIndex < NUMBER_ROWS; rowIndex++)
+            allPossibleLines.add(gameRows.get(rowIndex));
 
+        // add all columns
+        for (int columnIndex = 0; columnIndex < NUMBER_COLUMNS; columnIndex++) {
+            List<String> columnLine = new ArrayList<>();
+            for (List<String> row : gameRows)
+                columnLine.add(row.get(columnIndex));
+            allPossibleLines.add(columnLine);
+        }
 
-        // todo - add all columns
+        // add all diagonals
+        List<String> diagonal1 = Arrays.asList(gameRows.get(0).get(0), gameRows.get(1).get(1), gameRows.get(2).get(2));
+        allPossibleLines.add(diagonal1);
 
-
-        // todo - add all diagonals
+        List<String> diagonal2 = Arrays.asList(gameRows.get(0).get(2), gameRows.get(1).get(1), gameRows.get(2).get(0));
+        allPossibleLines.add(diagonal2);
 
         return allPossibleLines;
     }
