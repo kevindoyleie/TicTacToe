@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Random;
 
 @Service
-/**
+/*
  * The computer player who receives a {@link tictactoe.game.entity.Game} and makes a move.
  */
 public class ComputerPlayerService {
@@ -119,260 +119,340 @@ public class ComputerPlayerService {
     }
 
     private String findTileToWin(Game game, BoardTile boardTile) {
-        String tileId = null;
-
         final List<List<String>> gameRows = game.getRows();
-        // add all rows
+        // rows
         List<String> row1 = gameRows.get(0);
-        if (numberOfPlayerTiles(boardTile, row1) == 2) {
+        List<String> row2 = gameRows.get(1);
+        List<String> row3 = gameRows.get(2);
+        // columns
+        List<String> column1 = Arrays.asList(row1.get(0), row2.get(0), row3.get(0));
+        List<String> column2 = Arrays.asList(row1.get(1), row2.get(1), row3.get(1));
+        List<String> column3 = Arrays.asList(row1.get(2), row2.get(2), row3.get(2));
+        // add all diagonals
+        List<String> diagonal1 = Arrays.asList(row1.get(0), row2.get(1), row3.get(2));
+        List<String> diagonal2 = Arrays.asList(row1.get(2), row2.get(1), row3.get(0));
+        
+        String tileId = processRow1ForWinningMove(boardTile, row1);
+        tileId = processRow2ForWinningMove(boardTile, row2, tileId);
+        tileId = processRow3ForWinningMove(boardTile, row3, tileId);
+        tileId = processColumn1ForWinningMove(boardTile, column1, tileId);
+        tileId = processColumn2ForWinningMove(boardTile, column2, tileId);
+        tileId = processColumn3ForWinningMove(boardTile, column3, tileId);
+        tileId = processDiagonal1ForWinningMove(boardTile, diagonal1, tileId);
+        tileId = processDiagonal2ForWinningMove(boardTile, diagonal2, tileId);
+        return tileId;
+    }
+
+    private String processRow1ForWinningMove(BoardTile boardTile, List<String> row1) {
+        String tileId = null;
+        if (numberOfPlayerTilesInLine(boardTile, row1) == 2) {
             for (int i = 0; i < row1.size(); i++) {
                 String tile = row1.get(i);
                 if (tile.isEmpty()) {
                     if (i == 0)
-                        tileId = "0-0";
+                        tileId = TileConstants.TILE_1;
                     else if (i == 1)
-                        tileId = "0-1";
+                        tileId = TileConstants.TILE_2;
                     else if (i == 2)
-                        tileId = "0-2";
+                        tileId = TileConstants.TILE_3;
                 }
             }
         }
-        List<String> row2 = gameRows.get(1);
-        if (numberOfPlayerTiles(boardTile, row2) == 2) {
+        return tileId;
+    }
+
+    private String processRow2ForWinningMove(BoardTile boardTile, List<String> row2, String tileId) {
+        if (numberOfPlayerTilesInLine(boardTile, row2) == 2) {
             for (int i = 0; i < row2.size(); i++) {
                 String tile = row2.get(i);
                 if (tile.isEmpty()) {
                     if (i == 0)
-                        tileId = "1-0";
+                        tileId = TileConstants.TILE_4;
                     else if (i == 1)
-                        tileId = "1-1";
+                        tileId = TileConstants.TILE_5;
                     else if (i == 2)
-                        tileId = "1-2";
+                        tileId = TileConstants.TILE_6;
                 }
             }
         }
-        List<String> row3 = gameRows.get(2);
-        if (numberOfPlayerTiles(boardTile, row3) == 2) {
+        return tileId;
+    }
+
+    private String processRow3ForWinningMove(BoardTile boardTile, List<String> row3, String tileId) {
+        if (numberOfPlayerTilesInLine(boardTile, row3) == 2) {
             for (int i = 0; i < row3.size(); i++) {
                 String tile = row3.get(i);
                 if (tile.isEmpty()) {
                     if (i == 0)
-                        tileId = "2-0";
+                        tileId = TileConstants.TILE_7;
                     else if (i == 1)
-                        tileId = "2-1";
+                        tileId = TileConstants.TILE_8;
                     else if (i == 2)
-                        tileId = "2-2";
+                        tileId = TileConstants.TILE_9;
                 }
             }
         }
+        return tileId;
+    }
 
-        // add all columns
-        List<String> column1 = Arrays.asList(row1.get(0), row2.get(0), row3.get(0));
-        if (numberOfPlayerTiles(boardTile, column1) == 2) {
+    private String processColumn1ForWinningMove(BoardTile boardTile, List<String> column1, String tileId) {
+        if (numberOfPlayerTilesInLine(boardTile, column1) == 2) {
             for (int i = 0; i < column1.size(); i++) {
                 String tile = column1.get(i);
                 if (tile.isEmpty()) {
-                    if (i == 0)
-                        tileId = "0-0";
-                    else if (i == 1)
-                        tileId = "1-0";
-                    else if (i == 2)
-                        tileId = "2-0";
+                    if (i == 0) {
+                        tileId = TileConstants.TILE_1;
+                    }
+                    else if (i == 1) {
+                        tileId = TileConstants.TILE_4;
+                    }
+                    else if (i == 2) {
+                        tileId = TileConstants.TILE_7;
+                    }
                 }
             }
         }
-        List<String> column2 = Arrays.asList(row1.get(1), row2.get(1), row3.get(1));
-        if (numberOfPlayerTiles(boardTile, column2) == 2) {
+        return tileId;
+    }
+
+    private String processColumn2ForWinningMove(BoardTile boardTile, List<String> column2, String tileId) {
+        if (numberOfPlayerTilesInLine(boardTile, column2) == 2) {
             for (int i = 0; i < column2.size(); i++) {
                 String tile = column2.get(i);
                 if (tile.isEmpty()) {
                     if (i == 0)
-                        tileId = "0-1";
+                        tileId = TileConstants.TILE_2;
                     else if (i == 1)
-                        tileId = "1-1";
+                        tileId = TileConstants.TILE_5;
                     else if (i == 2)
-                        tileId = "2-1";
+                        tileId = TileConstants.TILE_8;
                 }
             }
         }
-        List<String> column3 = Arrays.asList(row1.get(2), row2.get(2), row3.get(2));
-        if (numberOfPlayerTiles(boardTile, column3) == 2) {
+        return tileId;
+    }
+
+    private String processColumn3ForWinningMove(BoardTile boardTile, List<String> column3, String tileId) {
+        if (numberOfPlayerTilesInLine(boardTile, column3) == 2) {
             for (int i = 0; i < column3.size(); i++) {
                 String tile = column3.get(i);
                 if (tile.isEmpty()) {
                     if (i == 0)
-                        tileId = "0-2";
+                        tileId = TileConstants.TILE_3;
                     else if (i == 1)
-                        tileId = "1-2";
+                        tileId = TileConstants.TILE_6;
                     else if (i == 2)
-                        tileId = "2-2";
+                        tileId = TileConstants.TILE_9;
                 }
             }
         }
-        // add all diagonals
-        List<String> diagonal1 = Arrays.asList(row1.get(0), row2.get(1), row3.get(2));
-        if (numberOfPlayerTiles(boardTile, diagonal1) == 2) {
+        return tileId;
+    }
+
+    private String processDiagonal1ForWinningMove(BoardTile boardTile, List<String> diagonal1, String tileId) {
+        if (numberOfPlayerTilesInLine(boardTile, diagonal1) == 2) {
             for (int i = 0; i < diagonal1.size(); i++) {
                 String tile = diagonal1.get(i);
                 if (tile.isEmpty()) {
                     if (i == 0)
-                        tileId = "0-0";
+                        tileId = TileConstants.TILE_1;
                     else if (i == 1)
-                        tileId = "1-1";
+                        tileId = TileConstants.TILE_5;
                     else if (i == 2)
-                        tileId = "2-2";
+                        tileId = TileConstants.TILE_9;
                 }
             }
         }
-        List<String> diagonal2 = Arrays.asList(row1.get(2), row2.get(1), row3.get(0));
-        if (numberOfPlayerTiles(boardTile, diagonal2) == 2) {
+        return tileId;
+    }
+
+    private String processDiagonal2ForWinningMove(BoardTile boardTile, List<String> diagonal2, String tileId) {
+        if (numberOfPlayerTilesInLine(boardTile, diagonal2) == 2) {
             for (int i = 0; i < diagonal2.size(); i++) {
                 String tile = diagonal2.get(i);
                 if (tile.isEmpty()) {
                     if (i == 0)
-                        tileId = "0-2";
+                        tileId = TileConstants.TILE_3;
                     else if (i == 1)
-                        tileId = "1-1";
+                        tileId = TileConstants.TILE_5;
                     else if (i == 2)
-                        tileId = "2-0";
+                        tileId = TileConstants.TILE_7;
                 }
             }
         }
-
         return tileId;
     }
 
     private String findTileToBlock(Game game, BoardTile boardTile)
     {
-        String tileId = null;
         final List<List<String>> gameRows = game.getRows();
         // rows
         List<String> row1 = gameRows.get(0);
+        List<String> row2 = gameRows.get(1);
+        List<String> row3 = gameRows.get(2);
+        // columns
+        List<String> column1 = Arrays.asList(row1.get(0), row2.get(0), row3.get(0));
+        List<String> column2 = Arrays.asList(row1.get(1), row2.get(1), row3.get(1));
+        List<String> column3 = Arrays.asList(row1.get(2), row2.get(2), row3.get(2));
+        // diagonals
+        List<String> diagonal1 = Arrays.asList(gameRows.get(0).get(0), gameRows.get(1).get(1), gameRows.get(2).get(2));
+        List<String> diagonal2 = Arrays.asList(gameRows.get(0).get(2), gameRows.get(1).get(1), gameRows.get(2).get(0));
+
+        String tileId = processRow1ForBlockingMove(boardTile, row1);
+        tileId = processRow2ForBlockingMove(boardTile, row2, tileId);
+        tileId = processRow3ForBlockingMove(boardTile, row3, tileId);
+        tileId = processColumn1ForBlockingMove(boardTile, column1, tileId);
+        tileId = processColumn2ForBlockingMove(boardTile, column2, tileId);
+        tileId = processColumn3ForBlockingMove(boardTile, column3, tileId);
+        tileId = processDiagonal1ForBlockingMove(boardTile, diagonal1, tileId);
+        tileId = processDiagonal2ForBlockingMove(boardTile, diagonal2, tileId);
+        return tileId;
+
+    }
+
+    private String processRow1ForBlockingMove(BoardTile boardTile, List<String> row1) {
+        String tileId = null;
         final long numberOfOppositionTilesInRow1 = numberOfOppositionTiles(boardTile, row1) - numberOfEmptyTiles(row1);
         if (numberOfOppositionTilesInRow1 == 2 && (numberOfEmptyTiles(row1) == 1)) {
             for (int i = 0; i < row1.size(); i++) {
                 String tile = row1.get(i);
                 if (tile.isEmpty()) {
                     if (i == 0)
-                        tileId = "0-0";
+                        tileId = TileConstants.TILE_1;
                     else if (i == 1)
-                        tileId = "1-0";
+                        tileId = TileConstants.TILE_4;
                     else if (i == 2)
-                        tileId = "2-0";
+                        tileId = TileConstants.TILE_7;
                 }
             }
-
         }
-        List<String> row2 = gameRows.get(1);
+        return tileId;
+    }
+
+    private String processRow2ForBlockingMove(BoardTile boardTile, List<String> row2, String tileId) {
         final long numberOfOppositionTilesInRow2 = numberOfOppositionTiles(boardTile, row2) - numberOfEmptyTiles(row2);
         if (numberOfOppositionTilesInRow2 == 2 && (numberOfEmptyTiles(row2) == 1)) {
             for (int i = 0; i < row2.size(); i++) {
                 String tile = row2.get(i);
                 if (tile.isEmpty()) {
                     if (i == 0)
-                        tileId = "1-0";
+                        tileId = TileConstants.TILE_4;
                     else if (i == 1)
-                        tileId = "1-1";
+                        tileId = TileConstants.TILE_5;
                     else if (i == 2)
-                        tileId = "1-2";
+                        tileId = TileConstants.TILE_6;
                 }
             }
         }
-        List<String> row3 = gameRows.get(2);
+        return tileId;
+    }
+
+    private String processRow3ForBlockingMove(BoardTile boardTile, List<String> row3, String tileId) {
         final long numberOfOppositionTilesInRow3 = numberOfOppositionTiles(boardTile, row3) - numberOfEmptyTiles(row3);
         if (numberOfOppositionTilesInRow3 == 2 && (numberOfEmptyTiles(row3) == 1)) {
             for (int i = 0; i < row3.size(); i++) {
                 String tile = row3.get(i);
                 if (tile.isEmpty()) {
                     if (i == 0)
-                        tileId = "0-2";
+                        tileId = TileConstants.TILE_3;
                     else if (i == 1)
-                        tileId = "2-1";
+                        tileId = TileConstants.TILE_8;
                     else if (i == 2)
-                        tileId = "2-2";
+                        tileId = TileConstants.TILE_9;
                 }
             }
         }
-        // columns
-        List<String> column1 = Arrays.asList(row1.get(0), row2.get(0), row3.get(0));
+        return tileId;
+    }
+
+    private String processColumn1ForBlockingMove(BoardTile boardTile, List<String> column1, String tileId) {
         final long numberOfOppositionTilesInCol1 = numberOfOppositionTiles(boardTile, column1) - numberOfEmptyTiles(column1);
         if (numberOfOppositionTilesInCol1 == 2 && numberOfEmptyTiles(column1) == 1) {
             for (int i = 0; i < column1.size(); i++) {
                 String tile = column1.get(i);
                 if (tile.isEmpty()) {
                     if (i == 0)
-                        tileId = "0-0";
+                        tileId = TileConstants.TILE_1;
                     else if (i == 1)
-                        tileId = "0-1";
+                        tileId = TileConstants.TILE_2;
                     else if (i == 2)
-                        tileId = "0-2";
+                        tileId = TileConstants.TILE_3;
                 }
             }
         }
-        List<String> column2 = Arrays.asList(row1.get(1), row2.get(1), row3.get(1));
+        return tileId;
+    }
+
+    private String processColumn2ForBlockingMove(BoardTile boardTile, List<String> column2, String tileId) {
         final long numberOfOppositionTilesInCol2 = numberOfOppositionTiles(boardTile, column2) - numberOfEmptyTiles(column2);
         if (numberOfOppositionTilesInCol2 == 2 && numberOfEmptyTiles(column2) == 1) {
             for (int i = 0; i < column2.size(); i++) {
                 String tile = column2.get(i);
                 if (tile.isEmpty()) {
                     if (i == 0)
-                        tileId = "1-0";
+                        tileId = TileConstants.TILE_4;
                     else if (i == 1)
-                        tileId = "1-1";
+                        tileId = TileConstants.TILE_5;
                     else if (i == 2)
-                        tileId = "2-1";
+                        tileId = TileConstants.TILE_8;
                 }
             }
         }
-        List<String> column3 = Arrays.asList(row1.get(2), row2.get(2), row3.get(2));
+        return tileId;
+    }
+
+    private String processColumn3ForBlockingMove(BoardTile boardTile, List<String> column3, String tileId) {
         final long numberOfOppositionTilesInCol3 = numberOfOppositionTiles(boardTile, column3) - numberOfEmptyTiles(column3);
         if (numberOfOppositionTilesInCol3 == 2 && numberOfEmptyTiles(column3) == 1) {
             for (int i = 0; i < column3.size(); i++) {
                 String tile = column3.get(i);
                 if (tile.isEmpty()) {
                     if (i == 0)
-                        tileId = "2-0";
+                        tileId = TileConstants.TILE_7;
                     else if (i == 1)
-                        tileId = "2-1";
+                        tileId = TileConstants.TILE_8;
                     else if (i == 2)
-                        tileId = "2-2";
+                        tileId = TileConstants.TILE_9;
                 }
             }
         }
-        // add all diagonals
-        List<String> diagonal1 = Arrays.asList(gameRows.get(0).get(0), gameRows.get(1).get(1), gameRows.get(2).get(2));
+        return tileId;
+    }
+
+    private String processDiagonal1ForBlockingMove(BoardTile boardTile, List<String> diagonal1, String tileId) {
         final long numberOfOppositionTilesInDiagonal1 = numberOfOppositionTiles(boardTile, diagonal1) - numberOfEmptyTiles(diagonal1);
         if (numberOfOppositionTilesInDiagonal1 == 2 && numberOfEmptyTiles(diagonal1) == 1) {
             for (int i = 0; i < diagonal1.size(); i++) {
                 String tile = diagonal1.get(i);
                 if (tile.isEmpty()) {
                     if (i == 0)
-                        tileId = "0-0";
+                        tileId = TileConstants.TILE_1;
                     else if (i == 1)
-                        tileId = "1-1";
+                        tileId = TileConstants.TILE_5;
                     else if (i == 2)
-                        tileId = "2-2";
+                        tileId = TileConstants.TILE_9;
                 }
             }
         }
-        List<String> diagonal2 = Arrays.asList(gameRows.get(0).get(2), gameRows.get(1).get(1), gameRows.get(2).get(0));
+        return tileId;
+    }
+
+    private String processDiagonal2ForBlockingMove(BoardTile boardTile, List<String> diagonal2, String tileId) {
         final long numberOfOppositionTilesInDiagonal2 = numberOfOppositionTiles(boardTile, diagonal2) - numberOfEmptyTiles(diagonal2);
         if (numberOfOppositionTilesInDiagonal2 == 2 && numberOfEmptyTiles(diagonal2) == 1) {
             for (int i = 0; i < diagonal2.size(); i++) {
                 String tile = diagonal2.get(i);
                 if (tile.isEmpty()) {
                     if (i == 0)
-                        tileId = "0-2";
+                        tileId = TileConstants.TILE_3;
                     else if (i == 1)
-                        tileId = "1-1";
+                        tileId = TileConstants.TILE_5;
                     else if (i == 2)
-                        tileId = "2-0";
+                        tileId = TileConstants.TILE_7;
                 }
             }
         }
-
         return tileId;
-
     }
 
     private long numberOfEmptyTiles(List<String> line) {
@@ -382,7 +462,7 @@ public class ComputerPlayerService {
         return line.stream().filter(tile -> !(tile.equals(boardTile.toString()))).count();
     }
 
-    private long numberOfPlayerTiles(BoardTile boardTile, List<String> line) {
+    private long numberOfPlayerTilesInLine(BoardTile boardTile, List<String> line) {
         return line.stream().filter(tile -> (tile.equals(boardTile.toString()))).count();
     }
 
