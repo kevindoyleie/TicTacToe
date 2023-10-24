@@ -43,6 +43,8 @@ This repo defines a default user that you just logged in with named "horatio".
 
 Please add an additional user using the same pattern.
 
+_Tip: Simple implementation is fine, copy the implementation that added Horatio._
+
 ## 3. Fix the run.sh script
 
 There is a `run.sh` and `test.sh` script in the top directory of the repo.
@@ -50,27 +52,25 @@ There is a `run.sh` and `test.sh` script in the top directory of the repo.
 ### 3.1 Fix the script
 It isn't working for some reason when we call `./run.sh` from a normal terminal, but is working when we call `bash run.sh` can you fix it?
 
-Is there a problem with the file permissions?
+_Hint: Is there a problem with the file permissions?_
 
 ## 4. Fix the code & pass the tests
 
 The run script is fixed, but it is obvious that there are failing tests.
 
-Fix or implement the code which is failing, **the tests themselves are correct and don't need to change.**
+_Tip: The tests themselves are correct and don't need to change._
 
-_Read the javadoc_
+_Tip: Read the javadoc and the tests._
 
-### 4.1 Run the BoardUtilTests
-Run the BoardUtilTests tests, they should fail
+### 4.1 Implement the BoardUtil.getAllLines(...) method
+Run the BoardUtilTest tests, they should fail
 
-### 4.2 Implement the BoardUtil.getAllLines(...) method
-The getAllLines method is not complete, once complete the BoardUtilTests will pass.
+The getAllLines method is not complete, once complete the BoardUtilTest tests will pass.
 
-### 4.3 Run the GameServiceTests
-Run the GameServiceTests tests, they should fail
+### 4.2 Implement the GameService.evaluateGameState(...) method
+Run the GameServiceTest tests, they should fail
 
-### 4.4 Implement the GameService.evaluateGameState(...) method
-This method is needed for the GameServiceTests to pass.
+This method is needed for the GameServiceTest to pass.
 
 _Evaluate the state of the board, has anyone won? Is it a draw? Is it in progress?_
 

@@ -34,8 +34,7 @@ class BoardUtil {
      *         ]
      * @return all possible lines of strings through the game board.
      */
-    public static List<List<String>> getAllPossibleLines(List<List<String>> gameRows)
-    {
+    public static List<List<String>> getAllPossibleLines(List<List<String>> gameRows) {
         final List<List<String>> allPossibleLines = new ArrayList<>();
 
         // add all rows
@@ -50,6 +49,7 @@ class BoardUtil {
             allPossibleLines.add(columnLine);
         }
 
+        // add all diagonals
         // add all diagonals
         List<String> diagonal1 = Arrays.asList(gameRows.get(0).get(0), gameRows.get(1).get(1), gameRows.get(2).get(2));
         allPossibleLines.add(diagonal1);
