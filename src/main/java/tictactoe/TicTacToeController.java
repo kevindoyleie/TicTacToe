@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import tictactoe.game.ComputerPlayerService;
 import tictactoe.game.GameService;
@@ -36,12 +36,12 @@ public class TicTacToeController {
         this.appUserRepository = appUserRepository;
     }
 
-    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    @GetMapping(value = "/login")
     public String login() {
         return "login";
     }
 
-    @RequestMapping(value = "/", method = RequestMethod.GET)
+    @GetMapping(value = "/")
     public String index(Principal principal, Model model) {
         AppUser appUser = getAppUser(principal);
 
@@ -55,7 +55,7 @@ public class TicTacToeController {
         return "index";
     }
 
-    @RequestMapping(value = "/", method = RequestMethod.POST)
+    @PostMapping(value = "/")
     public String takeTurns(
             Model model,
             Principal principal,

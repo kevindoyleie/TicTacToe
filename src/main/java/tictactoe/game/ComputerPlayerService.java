@@ -16,6 +16,7 @@ import java.util.Random;
 public class ComputerPlayerService {
 
     private final GameService gameService;
+    Random random = new Random();
 
     @Autowired
     public ComputerPlayerService(final GameService gameService) {
@@ -26,18 +27,18 @@ public class ComputerPlayerService {
      * For the given Game, try to make a play.
      *
      * @param game {@link Game} the game state, including who plays next.
-     * @return
      */
     public void takeTurn(Game game) {
         String tileId;
 
-        // todo - try to get winning turns
+        // try to get winning turns
         tileId = getWinningTile(game);
 
-        // todo - try to get blocking turns
+        // try to get blocking turns
         if (tileId == null)
             tileId = getBlockingTile(game);
 
+        // No winning or blocking turn available
         if (tileId == null)
             tileId = this.getRandomEmptyTile(game);
 
@@ -51,12 +52,10 @@ public class ComputerPlayerService {
      * @return nullable {@link String} in the format "{row index}-{column index}".
      */
     String getBlockingTile(Game game) {
-        // todo - try to get blocking turns
         final List<String> available = getAvailableTiles(game);
         if (available.isEmpty())
             return null;
-
-        // todo check for a possible winning tile for opposing player and block it
+        
         final Game.PlayerNumber nextMove = game.getNextMove();
         if (nextMove != null) {
             final BoardTile boardTile = gameService.getPlayersBoardTile(nextMove);
@@ -75,7 +74,6 @@ public class ComputerPlayerService {
      * @return nullable {@link String} in the format "{row index}-{column index}".
      */
     String getWinningTile(Game game) {
-        // todo - try to get winning turns
         final List<String> available = getAvailableTiles(game);
         if (available.isEmpty())
             return null;
@@ -102,7 +100,7 @@ public class ComputerPlayerService {
             return null;
         }
 
-        int randomNum = new Random().nextInt(available.size());
+        int randomNum = this.random.nextInt(available.size());
         return available.get(randomNum);
     }
 
@@ -143,13 +141,14 @@ public class ComputerPlayerService {
         if (numberOfPlayerTiles(boardTile, row2) == 2) {
             for (int i = 0; i < row2.size(); i++) {
                 String tile = row2.get(i);
-                if (tile.isEmpty())
+                if (tile.isEmpty()) {
                     if (i == 0)
                         tileId = "1-0";
                     else if (i == 1)
                         tileId = "1-1";
                     else if (i == 2)
                         tileId = "1-2";
+                }
             }
         }
         List<String> row3 = gameRows.get(2);
@@ -243,9 +242,8 @@ public class ComputerPlayerService {
         return tileId;
     }
 
-    private String findTileToBlock(Game game, BoardTile boardTile) {
-
-        // TODO analyse all lines for possible winning moves
+    private String findTileToBlock(Game game, BoardTile boardTile)
+    {
         String tileId = null;
         final List<List<String>> gameRows = game.getRows();
         // rows

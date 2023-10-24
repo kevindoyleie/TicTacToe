@@ -1,10 +1,11 @@
 package tictactoe.game;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
-import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class BoardUtilTest {
 
@@ -42,10 +43,10 @@ class BoardUtilTest {
         assertThat(allPossibleLines.get(7)).containsExactly("c", "e", "g");
 
         // Overall size
-        assertThat(allPossibleLines.size())
+        assertThat(allPossibleLines)
                 .withFailMessage(() -> String.format(
                         "There are 8 possible lines through a tic-tac-toe board, got: %s", allPossibleLines.size())
                 )
-                .isEqualTo(8);
+                .hasSize(8);
     }
 }

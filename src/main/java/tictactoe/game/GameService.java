@@ -116,11 +116,9 @@ public class GameService {
             if (firstTile.isEmpty())
                 continue;
 
-            if (weHaveAWinner(line, firstTile)) {
-                for (String tile : line)
-                    if (tile.equals(firstTile))
-                        return firstTile.equals(BoardTile.X.toString()) ? GameState.PLAYER_1_WIN : GameState.PLAYER_2_WIN;
-            }
+            if (isAWinner(line, firstTile))
+                return firstTile.equals(BoardTile.X.toString()) ? GameState.PLAYER_1_WIN : GameState.PLAYER_2_WIN;
+
         }
 
         for (List<String> row : rows)
@@ -130,7 +128,7 @@ public class GameService {
         return GameState.DRAW; // no connected lines for a winner AND all tiles are taken
     }
 
-    private boolean weHaveAWinner(List<String> line, String firstTile) {
+    private static boolean isAWinner(List<String> line, String firstTile) {
         return line.stream().allMatch(tile -> tile.equals(firstTile));
     }
 }

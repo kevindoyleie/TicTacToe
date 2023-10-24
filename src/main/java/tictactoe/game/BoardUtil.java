@@ -6,6 +6,8 @@ import java.util.List;
 
 class BoardUtil {
 
+    private BoardUtil() {}
+
     private static final int NUMBER_ROWS = 3;
     private static final int NUMBER_COLUMNS = 3;
 

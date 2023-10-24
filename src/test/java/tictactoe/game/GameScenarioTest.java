@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.lenient;
 
 @ExtendWith(MockitoExtension.class)
-public class GameScenario
+class GameScenarioTest
 {
     private GameService gameService;
     private ComputerPlayerService computerPlayerService;
