@@ -320,9 +320,9 @@ public class ComputerPlayerService {
                     if (i == 0)
                         tileId = TileConstants.TILE_1;
                     else if (i == 1)
-                        tileId = TileConstants.TILE_4;
+                        tileId = TileConstants.TILE_2;
                     else if (i == 2)
-                        tileId = TileConstants.TILE_7;
+                        tileId = TileConstants.TILE_3;
                 }
             }
         }
@@ -354,7 +354,7 @@ public class ComputerPlayerService {
                 String tile = row3.get(i);
                 if (tile.isEmpty()) {
                     if (i == 0)
-                        tileId = TileConstants.TILE_3;
+                        tileId = TileConstants.TILE_7;
                     else if (i == 1)
                         tileId = TileConstants.TILE_8;
                     else if (i == 2)
@@ -390,7 +390,7 @@ public class ComputerPlayerService {
                 String tile = column2.get(i);
                 if (tile.isEmpty()) {
                     if (i == 0)
-                        tileId = TileConstants.TILE_4;
+                        tileId = TileConstants.TILE_2;
                     else if (i == 1)
                         tileId = TileConstants.TILE_5;
                     else if (i == 2)
@@ -408,9 +408,9 @@ public class ComputerPlayerService {
                 String tile = column3.get(i);
                 if (tile.isEmpty()) {
                     if (i == 0)
-                        tileId = TileConstants.TILE_7;
+                        tileId = TileConstants.TILE_3;
                     else if (i == 1)
-                        tileId = TileConstants.TILE_8;
+                        tileId = TileConstants.TILE_6;
                     else if (i == 2)
                         tileId = TileConstants.TILE_9;
                 }

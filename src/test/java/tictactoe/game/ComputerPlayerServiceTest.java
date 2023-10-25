@@ -103,23 +103,23 @@ class ComputerPlayerServiceTest {
 
         String blockingTile = computerPlayerService.getBlockingTile(game);
         // There is a blocking move at bottom right
-        assertThat(blockingTile).isEqualTo("0-2");
+        assertThat(blockingTile).isEqualTo("2-0");
     }
 
     @Test
     void testGetBlockingTileRow1BlockingMove() {
-        when(game.getNextMove()).thenReturn(PlayerNumber.PLAYER_1);
-        when(gameService.getPlayersBoardTile(PlayerNumber.PLAYER_1)).thenReturn(BoardTile.X);
+        when(game.getNextMove()).thenReturn(PlayerNumber.PLAYER_2);
+        when(gameService.getPlayersBoardTile(PlayerNumber.PLAYER_2)).thenReturn(BoardTile.O);
         List<List<String>> rows = Arrays.asList(//@formatter:off
                 Arrays.asList("x", "", "x"),
-                Arrays.asList("o", "o", ""),
-                Arrays.asList("o", "x", "x")
+                Arrays.asList("o", "x", ""),
+                Arrays.asList("o", "x", "o")
         );//@formatter:on
         when(game.getRows()).thenReturn(rows);
 
         String blockingTile = computerPlayerService.getBlockingTile(game);
         // There is a blocking move at bottom right
-        assertThat(blockingTile).isEqualTo("1-2");
+        assertThat(blockingTile).isEqualTo("0-1");
     }
 
     @Test
