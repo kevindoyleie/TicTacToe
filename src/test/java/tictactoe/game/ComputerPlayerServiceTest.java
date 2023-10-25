@@ -143,6 +143,22 @@ class ComputerPlayerServiceTest {
         when(game.getNextMove()).thenReturn(PlayerNumber.PLAYER_1);
         when(gameService.getPlayersBoardTile(PlayerNumber.PLAYER_1)).thenReturn(BoardTile.X);
         List<List<String>> rows = Arrays.asList(//@formatter:off
+                Arrays.asList("o", "", ""),
+                Arrays.asList("o", "x", ""),
+                Arrays.asList("", "", "x")
+        );//@formatter:on
+        when(game.getRows()).thenReturn(rows);
+
+        String blockingTile = computerPlayerService.getBlockingTile(game);
+        // There is a blocking move at bottom right
+        assertThat(blockingTile).isEqualTo("2-0");
+    }
+
+    @Test
+    void testGetBlockingTileColumn1BlockingMove() {
+        when(game.getNextMove()).thenReturn(PlayerNumber.PLAYER_1);
+        when(gameService.getPlayersBoardTile(PlayerNumber.PLAYER_1)).thenReturn(BoardTile.X);
+        List<List<String>> rows = Arrays.asList(//@formatter:off
                 Arrays.asList("x", "o", ""),
                 Arrays.asList("", "o", ""),
                 Arrays.asList("", "", "x")
@@ -152,6 +168,22 @@ class ComputerPlayerServiceTest {
         String blockingTile = computerPlayerService.getBlockingTile(game);
         // There is a blocking move at bottom right
         assertThat(blockingTile).isEqualTo("2-1");
+    }
+
+    @Test
+    void testGetBlockingTileColumn2BlockingMove() {
+        when(game.getNextMove()).thenReturn(PlayerNumber.PLAYER_1);
+        when(gameService.getPlayersBoardTile(PlayerNumber.PLAYER_1)).thenReturn(BoardTile.X);
+        List<List<String>> rows = Arrays.asList(//@formatter:off
+                Arrays.asList("x", "x", "o"),
+                Arrays.asList("", "", "o"),
+                Arrays.asList("", "", "")
+        );//@formatter:on
+        when(game.getRows()).thenReturn(rows);
+
+        String blockingTile = computerPlayerService.getBlockingTile(game);
+        // There is a blocking move at bottom right
+        assertThat(blockingTile).isEqualTo("2-2");
     }
 
     @Test
@@ -180,7 +212,55 @@ class ComputerPlayerServiceTest {
     }
 
     @Test
+    void testGetWinningTileDiagonal2WinningMove() {
+        when(game.getNextMove()).thenReturn(PlayerNumber.PLAYER_1);
+        when(gameService.getPlayersBoardTile(PlayerNumber.PLAYER_1)).thenReturn(BoardTile.X);
+        List<List<String>> rows = Arrays.asList(//@formatter:off
+                Arrays.asList("", "o", "x"),
+                Arrays.asList("", "x", ""),
+                Arrays.asList("", "o", "")
+        );//@formatter:on
+        when(game.getRows()).thenReturn(rows);
+
+        String winningTile = computerPlayerService.getWinningTile(game);
+        // There is a winning move at top left
+        assertThat(winningTile).isEqualTo("2-0");
+    }
+
+    @Test
     void testGetWinningTileRowWinningMove() {
+        when(game.getNextMove()).thenReturn(PlayerNumber.PLAYER_1);
+        when(gameService.getPlayersBoardTile(PlayerNumber.PLAYER_1)).thenReturn(BoardTile.X);
+        List<List<String>> rows = Arrays.asList(//@formatter:off
+                Arrays.asList("", "x", "x"),
+                Arrays.asList("", "o", ""),
+                Arrays.asList("", "o", "")
+        );//@formatter:on
+        when(game.getRows()).thenReturn(rows);
+
+        String winningTile = computerPlayerService.getWinningTile(game);
+        // There is a winning move at top left
+        assertThat(winningTile).isEqualTo("0-0");
+    }
+
+    @Test
+    void testGetWinningTileRow1WinningMove() {
+        when(game.getNextMove()).thenReturn(PlayerNumber.PLAYER_1);
+        when(gameService.getPlayersBoardTile(PlayerNumber.PLAYER_1)).thenReturn(BoardTile.X);
+        List<List<String>> rows = Arrays.asList(//@formatter:off
+                Arrays.asList("", "o", ""),
+                Arrays.asList("", "x", "x"),
+                Arrays.asList("", "o", "")
+        );//@formatter:on
+        when(game.getRows()).thenReturn(rows);
+
+        String winningTile = computerPlayerService.getWinningTile(game);
+        // There is a winning move at top left
+        assertThat(winningTile).isEqualTo("1-0");
+    }
+
+    @Test
+    void testGetWinningTileRow2WinningMove() {
         when(game.getNextMove()).thenReturn(PlayerNumber.PLAYER_1);
         when(gameService.getPlayersBoardTile(PlayerNumber.PLAYER_1)).thenReturn(BoardTile.X);
         List<List<String>> rows = Arrays.asList(//@formatter:off
@@ -197,6 +277,38 @@ class ComputerPlayerServiceTest {
 
     @Test
     void testGetWinningTileColumnWinningMove() {
+        when(game.getNextMove()).thenReturn(PlayerNumber.PLAYER_1);
+        when(gameService.getPlayersBoardTile(PlayerNumber.PLAYER_1)).thenReturn(BoardTile.X);
+        List<List<String>> rows = Arrays.asList(//@formatter:off
+                Arrays.asList("", "", ""),
+                Arrays.asList("x", "", ""),
+                Arrays.asList("x", "o", "o")
+        );//@formatter:on
+        when(game.getRows()).thenReturn(rows);
+
+        String winningTile = computerPlayerService.getWinningTile(game);
+        // There is a winning move at top left
+        assertThat(winningTile).isEqualTo("0-0");
+    }
+
+    @Test
+    void testGetWinningTileColumn1WinningMove() {
+        when(game.getNextMove()).thenReturn(PlayerNumber.PLAYER_1);
+        when(gameService.getPlayersBoardTile(PlayerNumber.PLAYER_1)).thenReturn(BoardTile.X);
+        List<List<String>> rows = Arrays.asList(//@formatter:off
+                Arrays.asList("", "", ""),
+                Arrays.asList("", "x", ""),
+                Arrays.asList("o", "x", "o")
+        );//@formatter:on
+        when(game.getRows()).thenReturn(rows);
+
+        String winningTile = computerPlayerService.getWinningTile(game);
+        // There is a winning move at top left
+        assertThat(winningTile).isEqualTo("0-1");
+    }
+
+    @Test
+    void testGetWinningTileColumn2WinningMove() {
         when(game.getNextMove()).thenReturn(PlayerNumber.PLAYER_1);
         when(gameService.getPlayersBoardTile(PlayerNumber.PLAYER_1)).thenReturn(BoardTile.X);
         List<List<String>> rows = Arrays.asList(//@formatter:off

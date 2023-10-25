@@ -374,9 +374,9 @@ public class ComputerPlayerService {
                     if (i == 0)
                         tileId = TileConstants.TILE_1;
                     else if (i == 1)
-                        tileId = TileConstants.TILE_2;
+                        tileId = TileConstants.TILE_4;
                     else if (i == 2)
-                        tileId = TileConstants.TILE_3;
+                        tileId = TileConstants.TILE_7;
                 }
             }
         }
