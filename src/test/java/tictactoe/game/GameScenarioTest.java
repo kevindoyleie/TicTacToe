@@ -56,7 +56,7 @@ class GameScenarioTest
         );//@formatter:on
 
         // Computer move
-        computerPlayerService.takeTurn(game, "0-1");
+        computerPlayerService.takeTurnForComputer(game, "0-1");
 
         assertThat(game.getNextMove()).isEqualTo(Game.PlayerNumber.PLAYER_1);
         assertThat(game.getState()).isEqualTo(Game.GameState.IN_PROGRESS);
@@ -82,7 +82,7 @@ class GameScenarioTest
         );//@formatter:on
 
         // Computer Move
-        computerPlayerService.takeTurn(game, "1-1");
+        computerPlayerService.takeTurnForComputer(game, "1-1");
 
         assertThat(game.getNextMove()).isEqualTo(Game.PlayerNumber.PLAYER_1);
         assertThat(game.getState()).isEqualTo(Game.GameState.IN_PROGRESS);
@@ -136,7 +136,7 @@ class GameScenarioTest
         );//@formatter:on
 
         // Computer move
-        computerPlayerService.takeTurn(game, "0-0");
+        computerPlayerService.takeTurnForComputer(game, "0-0");
 
         assertThat(game.getNextMove()).isEqualTo(Game.PlayerNumber.PLAYER_1);
         assertThat(game.getState()).isEqualTo(Game.GameState.IN_PROGRESS);
