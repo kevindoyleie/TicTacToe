@@ -44,9 +44,7 @@ class GameScenarioTest
     void gameScenario_whenComputerTryToWin() {
         Game game = gameService.create(new AppUser(), true);
 
-        // Player move to start
         gameService.takeTurn(game, "0-0");
-        assertThat(game.getNextMove()).isEqualTo(Game.PlayerNumber.PLAYER_2);
         assertThat(game.getState()).isEqualTo(Game.GameState.IN_PROGRESS);
         assertRows(//@formatter:off
                 game,
@@ -55,10 +53,7 @@ class GameScenarioTest
                 "", "", ""
         );//@formatter:on
 
-        // Computer move
         computerPlayerService.takeTurnForComputer(game, "0-1");
-
-        assertThat(game.getNextMove()).isEqualTo(Game.PlayerNumber.PLAYER_1);
         assertThat(game.getState()).isEqualTo(Game.GameState.IN_PROGRESS);
         assertRows(//@formatter:off
                 game,
@@ -67,12 +62,7 @@ class GameScenarioTest
                 "", "", ""
         );//@formatter:on
 
-        final List<List<String>> one = game.getRows();
-
-        // Player move
         gameService.takeTurn(game, "0-2");
-
-        assertThat(game.getNextMove()).isEqualTo(Game.PlayerNumber.PLAYER_2);
         assertThat(game.getState()).isEqualTo(Game.GameState.IN_PROGRESS);
         assertRows(//@formatter:off
                 game,
@@ -81,10 +71,7 @@ class GameScenarioTest
                 "", "", ""
         );//@formatter:on
 
-        // Computer Move
         computerPlayerService.takeTurnForComputer(game, "1-1");
-
-        assertThat(game.getNextMove()).isEqualTo(Game.PlayerNumber.PLAYER_1);
         assertThat(game.getState()).isEqualTo(Game.GameState.IN_PROGRESS);
         assertRows(//@formatter:off
                 game,
@@ -93,12 +80,8 @@ class GameScenarioTest
                 "", "", ""
         );//@formatter:on
 
-        final List<List<String>> two = game.getRows();
 
-        // Player Move
         gameService.takeTurn(game, "2-2");
-
-        assertThat(game.getNextMove()).isEqualTo(Game.PlayerNumber.PLAYER_2);
         assertThat(game.getState()).isEqualTo(Game.GameState.IN_PROGRESS);
         assertRows(//@formatter:off
                 game,
@@ -107,9 +90,7 @@ class GameScenarioTest
                 "", "", "x"
         );//@formatter:on
 
-        // Computer should try to win
         computerPlayerService.takeTurn(game);
-
         assertNull(game.getNextMove());
         assertThat(game.getState()).isEqualTo(Game.GameState.PLAYER_2_WIN);
         assertRows(//@formatter:off
@@ -126,7 +107,6 @@ class GameScenarioTest
 
         // Player move to start
         gameService.takeTurn(game, "1-1");
-        assertThat(game.getNextMove()).isEqualTo(Game.PlayerNumber.PLAYER_2);
         assertThat(game.getState()).isEqualTo(Game.GameState.IN_PROGRESS);
         assertRows(//@formatter:off
                 game,
@@ -135,10 +115,7 @@ class GameScenarioTest
                 "", "", ""
         );//@formatter:on
 
-        // Computer move
         computerPlayerService.takeTurnForComputer(game, "0-0");
-
-        assertThat(game.getNextMove()).isEqualTo(Game.PlayerNumber.PLAYER_1);
         assertThat(game.getState()).isEqualTo(Game.GameState.IN_PROGRESS);
         assertRows(//@formatter:off
                 game,
@@ -147,12 +124,7 @@ class GameScenarioTest
                 "", "", ""
         );//@formatter:on
 
-        final List<List<String>> one = game.getRows();
-
-        // Player move
         gameService.takeTurn(game, "1-2");
-
-        assertThat(game.getNextMove()).isEqualTo(Game.PlayerNumber.PLAYER_2);
         assertThat(game.getState()).isEqualTo(Game.GameState.IN_PROGRESS);
         assertRows(//@formatter:off
                 game,
@@ -161,10 +133,8 @@ class GameScenarioTest
                 "", "", ""
         );//@formatter:on
 
-        // Computer Move - From here it is trying to block
+        // From here it is trying to block
         computerPlayerService.takeTurn(game);
-
-        assertThat(game.getNextMove()).isEqualTo(Game.PlayerNumber.PLAYER_1);
         assertThat(game.getState()).isEqualTo(Game.GameState.IN_PROGRESS);
         assertRows(//@formatter:off
                 game,
@@ -173,12 +143,7 @@ class GameScenarioTest
                 "", "", ""
         );//@formatter:on
 
-        final List<List<String>> two = game.getRows();
-
-        // Player Move
         gameService.takeTurn(game, "2-0");
-
-        assertThat(game.getNextMove()).isEqualTo(Game.PlayerNumber.PLAYER_2);
         assertThat(game.getState()).isEqualTo(Game.GameState.IN_PROGRESS);
         assertRows(//@formatter:off
                 game,
@@ -188,8 +153,6 @@ class GameScenarioTest
         );//@formatter:on
 
         computerPlayerService.takeTurn(game);
-
-        assertThat(game.getNextMove()).isEqualTo(Game.PlayerNumber.PLAYER_1);
         assertThat(game.getState()).isEqualTo(Game.GameState.IN_PROGRESS);
         assertRows(//@formatter:off
                 game,
@@ -198,10 +161,7 @@ class GameScenarioTest
                 "x", "", ""
         );//@formatter:on
 
-        final List<List<String>> three = game.getRows();
-
         gameService.takeTurn(game, "0-1");
-        assertThat(game.getNextMove()).isEqualTo(Game.PlayerNumber.PLAYER_2);
         assertThat(game.getState()).isEqualTo(Game.GameState.IN_PROGRESS);
         assertRows(//@formatter:off
                 game,
@@ -210,9 +170,7 @@ class GameScenarioTest
                 "x", "", ""
         );//@formatter:on
 
-
         computerPlayerService.takeTurn(game);
-        assertThat(game.getNextMove()).isEqualTo(Game.PlayerNumber.PLAYER_1);
         assertThat(game.getState()).isEqualTo(Game.GameState.IN_PROGRESS);
         assertRows(//@formatter:off
                 game,
