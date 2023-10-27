@@ -128,7 +128,7 @@ public class GameService {
         return GameState.DRAW; // no connected lines for a winner AND all tiles are taken
     }
 
-    private static boolean isAWinner(List<String> line, String firstTile) {
+    public static boolean isAWinner(List<String> line, String firstTile) {
         return line.stream().allMatch(tile -> tile.equals(firstTile));
     }
 }

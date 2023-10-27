@@ -61,4 +61,15 @@ class BoardUtil {
 
         return allPossibleLines;
     }
+
+    public static List<List<String>> getAllColumns(List<List<String>> gameRows) {
+        final List<List<String>> allColumns = new ArrayList<>();
+        for (int columnIndex = 0; columnIndex < 3; columnIndex++) {
+            List<String> columnLine = new ArrayList<>();
+            for (List<String> row : gameRows)
+                columnLine.add(row.get(columnIndex));
+            allColumns.add(columnLine);
+        }
+        return allColumns;
+    }
 }
