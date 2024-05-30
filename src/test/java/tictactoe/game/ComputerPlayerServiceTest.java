@@ -11,6 +11,7 @@ import tictactoe.game.entity.Game.PlayerNumber;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -53,9 +54,9 @@ class ComputerPlayerServiceTest {
     void testGetBlockingTileNoBlockingMove() {
         lenient().when(game.getNextMove()).thenReturn(PlayerNumber.PLAYER_1);
         when(gameService.getPlayersBoardTile(PlayerNumber.PLAYER_1)).thenReturn(BoardTile.X);
-        String blockingTile = computerPlayerService.getBlockingTile(game);
+        Optional<String> blockingTile = computerPlayerService.getBlockingTile(game);
         // There is no blocking move
-        assertThat(blockingTile).isNull();
+        assertThat(blockingTile.isEmpty());
     }
 
     @Test
@@ -69,9 +70,9 @@ class ComputerPlayerServiceTest {
         );//@formatter:on
         when(game.getRows()).thenReturn(rows);
 
-        String blockingTile = computerPlayerService.getBlockingTile(game);
+        Optional<String> blockingTile = computerPlayerService.getBlockingTile(game);
         // There is a blocking move at bottom right
-        assertThat(blockingTile).isEqualTo("2-2");
+        assertThat(blockingTile.get()).isEqualTo("2-2");
     }
 
     @Test
@@ -85,9 +86,9 @@ class ComputerPlayerServiceTest {
         );//@formatter:on
         when(game.getRows()).thenReturn(rows);
 
-        String blockingTile = computerPlayerService.getBlockingTile(game);
+        Optional<String> blockingTile = computerPlayerService.getBlockingTile(game);
         // There is a blocking move at bottom right
-        assertThat(blockingTile).isEqualTo("2-0");
+        assertThat(blockingTile.get()).isEqualTo("2-0");
     }
 
     @Test
@@ -101,9 +102,9 @@ class ComputerPlayerServiceTest {
         );//@formatter:on
         when(game.getRows()).thenReturn(rows);
 
-        String blockingTile = computerPlayerService.getBlockingTile(game);
+        Optional<String> blockingTile = computerPlayerService.getBlockingTile(game);
         // There is a blocking move at bottom right
-        assertThat(blockingTile).isEqualTo("2-0");
+        assertThat(blockingTile.get()).isEqualTo("2-0");
     }
 
     @Test
@@ -117,9 +118,9 @@ class ComputerPlayerServiceTest {
         );//@formatter:on
         when(game.getRows()).thenReturn(rows);
 
-        String blockingTile = computerPlayerService.getBlockingTile(game);
+        Optional<String> blockingTile = computerPlayerService.getBlockingTile(game);
         // There is a blocking move at bottom right
-        assertThat(blockingTile).isEqualTo("0-1");
+        assertThat(blockingTile.get()).isEqualTo("0-1");
     }
 
     @Test
@@ -133,9 +134,9 @@ class ComputerPlayerServiceTest {
         );//@formatter:on
         when(game.getRows()).thenReturn(rows);
 
-        String blockingTile = computerPlayerService.getBlockingTile(game);
+        Optional<String> blockingTile = computerPlayerService.getBlockingTile(game);
         // There is a blocking move at bottom right
-        assertThat(blockingTile).isEqualTo("2-1");
+        assertThat(blockingTile.get()).isEqualTo("2-1");
     }
 
     @Test
@@ -149,9 +150,9 @@ class ComputerPlayerServiceTest {
         );//@formatter:on
         when(game.getRows()).thenReturn(rows);
 
-        String blockingTile = computerPlayerService.getBlockingTile(game);
+        Optional<String> blockingTile = computerPlayerService.getBlockingTile(game);
         // There is a blocking move at bottom right
-        assertThat(blockingTile).isEqualTo("2-0");
+        assertThat(blockingTile.get()).isEqualTo("2-0");
     }
 
     @Test
@@ -165,9 +166,9 @@ class ComputerPlayerServiceTest {
         );//@formatter:on
         when(game.getRows()).thenReturn(rows);
 
-        String blockingTile = computerPlayerService.getBlockingTile(game);
+        Optional<String> blockingTile = computerPlayerService.getBlockingTile(game);
         // There is a blocking move at bottom right
-        assertThat(blockingTile).isEqualTo("2-1");
+        assertThat(blockingTile.get()).isEqualTo("2-1");
     }
 
     @Test
@@ -181,18 +182,18 @@ class ComputerPlayerServiceTest {
         );//@formatter:on
         when(game.getRows()).thenReturn(rows);
 
-        String blockingTile = computerPlayerService.getBlockingTile(game);
+        Optional<String> blockingTile = computerPlayerService.getBlockingTile(game);
         // There is a blocking move at bottom right
-        assertThat(blockingTile).isEqualTo("2-2");
+        assertThat(blockingTile.get()).isEqualTo("2-2");
     }
 
     @Test
     void testGetWinningTileNoWinningMove() {
         lenient().when(game.getNextMove()).thenReturn(PlayerNumber.PLAYER_1);
         when(gameService.getPlayersBoardTile(PlayerNumber.PLAYER_1)).thenReturn(BoardTile.X);
-        String winningTile = computerPlayerService.getWinningTile(game);
+        Optional<String> winningTile = computerPlayerService.getWinningTile(game);
         // There is no winning move
-        assertThat(winningTile).isNull();
+        assertThat(winningTile.isEmpty());
     }
 
     @Test
@@ -206,9 +207,9 @@ class ComputerPlayerServiceTest {
         );//@formatter:on
         when(game.getRows()).thenReturn(rows);
 
-        String winningTile = computerPlayerService.getWinningTile(game);
+        Optional<String> winningTile = computerPlayerService.getWinningTile(game);
         // There is a winning move at top left
-        assertThat(winningTile).isEqualTo("0-0");
+        assertThat(winningTile.get()).isEqualTo("0-0");
     }
 
     @Test
@@ -222,9 +223,9 @@ class ComputerPlayerServiceTest {
         );//@formatter:on
         when(game.getRows()).thenReturn(rows);
 
-        String winningTile = computerPlayerService.getWinningTile(game);
+        Optional<String> winningTile = computerPlayerService.getWinningTile(game);
         // There is a winning move at top left
-        assertThat(winningTile).isEqualTo("2-0");
+        assertThat(winningTile.get()).isEqualTo("2-0");
     }
 
     @Test
@@ -238,9 +239,9 @@ class ComputerPlayerServiceTest {
         );//@formatter:on
         when(game.getRows()).thenReturn(rows);
 
-        String winningTile = computerPlayerService.getWinningTile(game);
+        Optional<String> winningTile = computerPlayerService.getWinningTile(game);
         // There is a winning move at top left
-        assertThat(winningTile).isEqualTo("0-0");
+        assertThat(winningTile.get()).isEqualTo("0-0");
     }
 
     @Test
@@ -254,9 +255,9 @@ class ComputerPlayerServiceTest {
         );//@formatter:on
         when(game.getRows()).thenReturn(rows);
 
-        String winningTile = computerPlayerService.getWinningTile(game);
+        Optional<String> winningTile = computerPlayerService.getWinningTile(game);
         // There is a winning move at top left
-        assertThat(winningTile).isEqualTo("1-0");
+        assertThat(winningTile.get()).isEqualTo("1-0");
     }
 
     @Test
@@ -270,9 +271,9 @@ class ComputerPlayerServiceTest {
         );//@formatter:on
         when(game.getRows()).thenReturn(rows);
 
-        String winningTile = computerPlayerService.getWinningTile(game);
+        Optional<String> winningTile = computerPlayerService.getWinningTile(game);
         // There is a winning move at top left
-        assertThat(winningTile).isEqualTo("2-0");
+        assertThat(winningTile.get()).isEqualTo("2-0");
     }
 
     @Test
@@ -286,9 +287,9 @@ class ComputerPlayerServiceTest {
         );//@formatter:on
         when(game.getRows()).thenReturn(rows);
 
-        String winningTile = computerPlayerService.getWinningTile(game);
+        Optional<String> winningTile = computerPlayerService.getWinningTile(game);
         // There is a winning move at top left
-        assertThat(winningTile).isEqualTo("0-0");
+        assertThat(winningTile.get()).isEqualTo("0-0");
     }
 
     @Test
@@ -302,9 +303,9 @@ class ComputerPlayerServiceTest {
         );//@formatter:on
         when(game.getRows()).thenReturn(rows);
 
-        String winningTile = computerPlayerService.getWinningTile(game);
+        Optional<String> winningTile = computerPlayerService.getWinningTile(game);
         // There is a winning move at top left
-        assertThat(winningTile).isEqualTo("0-1");
+        assertThat(winningTile.get()).isEqualTo("0-1");
     }
 
     @Test
@@ -318,15 +319,15 @@ class ComputerPlayerServiceTest {
         );//@formatter:on
         when(game.getRows()).thenReturn(rows);
 
-        String winningTile = computerPlayerService.getWinningTile(game);
+        Optional<String> winningTile = computerPlayerService.getWinningTile(game);
         // There is a winning move at top left
-        assertThat(winningTile).isEqualTo("0-2");
+        assertThat(winningTile.get()).isEqualTo("0-2");
     }
 
     @Test
     void testGetRandomEmptyTile() {
-        String tileId = computerPlayerService.getRandomEmptyTile(game);
-        assertThat(tileId).isNotNull();
+        Optional<String> tileId = computerPlayerService.getRandomEmptyTile(game);
+        assertThat(tileId.isEmpty());
     }
 
     @Test
@@ -338,8 +339,8 @@ class ComputerPlayerServiceTest {
         );//@formatter:on
         when(game.getRows()).thenReturn(rows);
 
-        String tileId = computerPlayerService.getRandomEmptyTile(game);
-        assertThat(tileId).isEqualTo("1-1");
+        Optional<String> tileId = computerPlayerService.getRandomEmptyTile(game);
+        assertThat(tileId.get()).isEqualTo("1-1");
     }
 
     @Test
@@ -351,7 +352,7 @@ class ComputerPlayerServiceTest {
         );//@formatter:on
         when(game.getRows()).thenReturn(rows);
 
-        String tileId = computerPlayerService.getRandomEmptyTile(game);
-        assertThat(tileId).isNull();
+        Optional<String> tileId = computerPlayerService.getRandomEmptyTile(game);
+        assertThat(tileId.isEmpty());
     }
 }

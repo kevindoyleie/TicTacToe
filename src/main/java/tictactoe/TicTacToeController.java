@@ -26,11 +26,8 @@ public class TicTacToeController {
     private final AppUserRepository appUserRepository;
 
     @Autowired
-    public TicTacToeController(
-            GameService gameService,
-            ComputerPlayerService computerPlayerService,
-            AppUserRepository appUserRepository) {
-
+    public TicTacToeController(GameService gameService, ComputerPlayerService computerPlayerService, AppUserRepository appUserRepository)
+    {
         this.gameService = gameService;
         this.computerPlayerService = computerPlayerService;
         this.appUserRepository = appUserRepository;
