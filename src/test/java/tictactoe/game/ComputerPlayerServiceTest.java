@@ -29,155 +29,78 @@ class ComputerPlayerServiceTest {
     private GameService gameService;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         computerPlayerService = new ComputerPlayerService(gameService);
-        List<List<String>> rows = Arrays.asList(//@formatter:off
-                Arrays.asList("", "", ""),
-                Arrays.asList("", "", ""),
-                Arrays.asList("", "", "")
-        );//@formatter:on
-        lenient().when(game.getRows()).thenReturn(rows);
-    }
-
-    @Test
-    void testTakeTurn() {
-        when(game.getNextMove()).thenReturn(PlayerNumber.PLAYER_1);
-        when(gameService.getPlayersBoardTile(PlayerNumber.PLAYER_1)).thenReturn(BoardTile.X);
-        final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        computerPlayerService.takeTurn(game);
-        verify(gameService).takeTurn(any(), captor.capture());
-        assertThat(captor.getValue()).isNotNull();
-    }
-
-    @Test
-    void testTakeTurn_PrioritizesForkOverCorner() {
-        when(game.getNextMove()).thenReturn(PlayerNumber.PLAYER_1);
-        when(gameService.getPlayersBoardTile(PlayerNumber.PLAYER_1)).thenReturn(BoardTile.X);
-
-        List<List<String>> rows = Arrays.asList(//@formatter:off
-                Arrays.asList("x", "", ""),
-                Arrays.asList("", "o", ""),
-                Arrays.asList("", "", "x")
-        );//@formatter:on
-        when(game.getRows()).thenReturn(rows);
-
-        final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-
-        computerPlayerService.takeTurn(game);
-
-        verify(gameService).takeTurn(any(), captor.capture());
-        assertThat(captor.getValue()).isEqualTo("0-2");
-    }
-
-    @Test
-    void testTakeTurn_PrioritizesBlockingFork() {
-        when(game.getNextMove()).thenReturn(PlayerNumber.PLAYER_1);
-        when(gameService.getPlayersBoardTile(PlayerNumber.PLAYER_1)).thenReturn(BoardTile.X);
-
-        List<List<String>> rows = Arrays.asList(//@formatter:off
-                Arrays.asList("x", "", ""),
-                Arrays.asList("", "o", ""),
-                Arrays.asList("", "", "x")
-        );//@formatter:on
-        when(game.getRows()).thenReturn(rows);
-
-        Optional<String> blockingForkTile = computerPlayerService.getBlockingForkTile(game);
-        assertThat(blockingForkTile).isEmpty();
+        when(game.getRows()).thenReturn(board(
+                row("", "", ""),
+                row("", "", ""),
+                row("", "", "")
+        ));
     }
 
     @Test
     void testTakeTurn_PrioritizesWinningOverEverythingElse() {
-        when(game.getNextMove()).thenReturn(PlayerNumber.PLAYER_1);
-        when(gameService.getPlayersBoardTile(PlayerNumber.PLAYER_1)).thenReturn(BoardTile.X);
-        List<List<String>> rows = Arrays.asList(//@formatter:off
-                Arrays.asList("x", "x", ""),
-                Arrays.asList("", "", ""),
-                Arrays.asList("", "", "")
-        );//@formatter:on
-        when(game.getRows()).thenReturn(rows);
+        givenPlayerOneTurn();
+        givenPlayerOneTile(BoardTile.X);
+        when(game.getRows()).thenReturn(board(
+                row("x", "x", ""),
+                row("", "", ""),
+                row("", "", "")
+        ));
 
-        final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-
-        computerPlayerService.takeTurn(game);
-
-        verify(gameService).takeTurn(any(), captor.capture());
-        assertThat(captor.getValue()).isEqualTo("0-2");
+        assertComputerPlays("0-2");
     }
 
     @Test
-    void testTakeTurn_PrioritizesBlockingOverCenterAndCorner() {
-        when(game.getNextMove()).thenReturn(PlayerNumber.PLAYER_1);
-        when(gameService.getPlayersBoardTile(PlayerNumber.PLAYER_1)).thenReturn(BoardTile.X);
-        List<List<String>> rows = Arrays.asList(//@formatter:off
-                Arrays.asList("o", "o", ""),
-                Arrays.asList("", "", ""),
-                Arrays.asList("", "", "")
-        );//@formatter:on
-        when(game.getRows()).thenReturn(rows);
+    void testTakeTurn_PrioritizesBlockingOverOtherNonWinningMoves() {
+        givenPlayerOneTurn();
+        givenPlayerOneTile(BoardTile.X);
+        when(game.getRows()).thenReturn(board(
+                row("o", "o", ""),
+                row("", "", ""),
+                row("", "", "")
+        ));
 
-        final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-
-        computerPlayerService.takeTurn(game);
-
-        verify(gameService).takeTurn(any(), captor.capture());
-        assertThat(captor.getValue()).isEqualTo("0-2");
+        assertComputerPlays("0-2");
     }
 
     @Test
-    void testTakeTurn_PrioritizesCenterOverCorner() {
-        when(game.getNextMove()).thenReturn(PlayerNumber.PLAYER_1);
-        when(gameService.getPlayersBoardTile(PlayerNumber.PLAYER_1)).thenReturn(BoardTile.X);
-        List<List<String>> rows = Arrays.asList(//@formatter:off
-                Arrays.asList("", "", ""),
-                Arrays.asList("", "", ""),
-                Arrays.asList("", "", "")
-        );//@formatter:on
-        when(game.getRows()).thenReturn(rows);
+    void testTakeTurn_PrioritizesCenterWhenNoWinOrBlockExists() {
+        givenPlayerOneTurn();
+        givenPlayerOneTile(BoardTile.X);
+        when(game.getRows()).thenReturn(board(
+                row("x", "", ""),
+                row("", "", ""),
+                row("", "", "o")
+        ));
 
-        final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-
-        computerPlayerService.takeTurn(game);
-
-        verify(gameService).takeTurn(any(), captor.capture());
-        assertThat(captor.getValue()).isEqualTo("1-1");
+        assertComputerPlays("1-1");
     }
 
     @Test
     void testTakeTurn_PrioritizesOppositeCornerOverCorner() {
-        when(game.getNextMove()).thenReturn(PlayerNumber.PLAYER_1);
-        when(gameService.getPlayersBoardTile(PlayerNumber.PLAYER_1)).thenReturn(BoardTile.X);
-        List<List<String>> rows = Arrays.asList(//@formatter:off
-                Arrays.asList("o", "", ""),
-                Arrays.asList("", "x", ""),
-                Arrays.asList("", "", "")
-        );//@formatter:on
-        when(game.getRows()).thenReturn(rows);
+        givenPlayerOneTurn();
+        givenPlayerOneTile(BoardTile.X);
+        when(game.getRows()).thenReturn(board(
+                row("o", "", ""),
+                row("", "x", ""),
+                row("", "", "")
+        ));
 
-        final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-
-        computerPlayerService.takeTurn(game);
-
-        verify(gameService).takeTurn(any(), captor.capture());
-        assertThat(captor.getValue()).isEqualTo("2-2");
+        assertComputerPlays("2-2");
     }
 
     @Test
     void testTakeTurn_PrioritizesCornerOverRandom() {
-        when(game.getNextMove()).thenReturn(PlayerNumber.PLAYER_1);
-        when(gameService.getPlayersBoardTile(PlayerNumber.PLAYER_1)).thenReturn(BoardTile.X);
-        List<List<String>> rows = Arrays.asList(//@formatter:off
-                Arrays.asList("", "o", ""),
-                Arrays.asList("o", "x", "o"),
-                Arrays.asList("", "o", "x")
-        );//@formatter:on
-        when(game.getRows()).thenReturn(rows);
+        givenPlayerOneTurn();
+        givenPlayerOneTile(BoardTile.X);
+        when(game.getRows()).thenReturn(board(
+                row("", "o", ""),
+                row("o", "x", "o"),
+                row("", "o", "x")
+        ));
 
-        final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-
-        computerPlayerService.takeTurn(game);
-
-        verify(gameService).takeTurn(any(), captor.capture());
-        assertThat(captor.getValue()).isEqualTo("0-0");
+        assertComputerPlays("0-0");
     }
 
     @Test
@@ -188,12 +111,11 @@ class ComputerPlayerServiceTest {
 
     @Test
     void testGetPreferredTile_CenterTaken_ReturnsEmpty() {
-        List<List<String>> rows = Arrays.asList(//@formatter:off
-                Arrays.asList("", "", ""),
-                Arrays.asList("", "x", ""),
-                Arrays.asList("", "", "")
-        );//@formatter:on
-        when(game.getRows()).thenReturn(rows);
+        when(game.getRows()).thenReturn(board(
+                row("", "", ""),
+                row("", "x", ""),
+                row("", "", "")
+        ));
 
         Optional<String> tileId = computerPlayerService.getPreferredTile(game);
         assertThat(tileId).isEmpty();
@@ -201,12 +123,11 @@ class ComputerPlayerServiceTest {
 
     @Test
     void testGetCornerTile_CornerAvailable_ReturnsCorner() {
-        List<List<String>> rows = Arrays.asList(//@formatter:off
-                Arrays.asList("", "o", "x"),
-                Arrays.asList("o", "x", "o"),
-                Arrays.asList("x", "o", "x")
-        );//@formatter:on
-        when(game.getRows()).thenReturn(rows);
+        when(game.getRows()).thenReturn(board(
+                row("", "o", "x"),
+                row("o", "x", "o"),
+                row("x", "o", "x")
+        ));
 
         Optional<String> tileId = computerPlayerService.getCornerTile(game);
         assertThat(tileId).contains("0-0");
@@ -214,12 +135,11 @@ class ComputerPlayerServiceTest {
 
     @Test
     void testGetCornerTile_NoCornersAvailable_ReturnsEmpty() {
-        List<List<String>> rows = Arrays.asList(//@formatter:off
-                Arrays.asList("x", "o", "x"),
-                Arrays.asList("o", "", "o"),
-                Arrays.asList("x", "o", "x")
-        );//@formatter:on
-        when(game.getRows()).thenReturn(rows);
+        when(game.getRows()).thenReturn(board(
+                row("x", "o", "x"),
+                row("o", "", "o"),
+                row("x", "o", "x")
+        ));
 
         Optional<String> tileId = computerPlayerService.getCornerTile(game);
         assertThat(tileId).isEmpty();
@@ -227,16 +147,16 @@ class ComputerPlayerServiceTest {
 
     @Test
     void testGetBlockingTileNoBlockingMove() {
-        lenient().when(game.getNextMove()).thenReturn(PlayerNumber.PLAYER_1);
-        when(gameService.getPlayersBoardTile(PlayerNumber.PLAYER_1)).thenReturn(BoardTile.X);
+        givenPlayerOneTurn();
+        givenPlayerOneTile(BoardTile.X);
         Optional<String> blockingTile = computerPlayerService.getBlockingTile(game);
         assertThat(blockingTile.isEmpty());
     }
 
     @Test
     void testGetWinningTileNoWinningMove() {
-        lenient().when(game.getNextMove()).thenReturn(PlayerNumber.PLAYER_1);
-        when(gameService.getPlayersBoardTile(PlayerNumber.PLAYER_1)).thenReturn(BoardTile.X);
+        givenPlayerOneTurn();
+        givenPlayerOneTile(BoardTile.X);
         Optional<String> winningTile = computerPlayerService.getWinningTile(game);
         assertThat(winningTile.isEmpty());
     }
@@ -245,5 +165,30 @@ class ComputerPlayerServiceTest {
     void testGetRandomEmptyTile() {
         Optional<String> tileId = computerPlayerService.getRandomEmptyTile(game);
         assertThat(tileId.isEmpty());
+    }
+
+    private void givenPlayerOneTurn() {
+        when(game.getNextMove()).thenReturn(PlayerNumber.PLAYER_1);
+    }
+
+    private void givenPlayerOneTile(BoardTile tile) {
+        when(gameService.getPlayersBoardTile(PlayerNumber.PLAYER_1)).thenReturn(tile);
+    }
+
+    private void assertComputerPlays(String expectedTileId) {
+        final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+
+        computerPlayerService.takeTurn(game);
+
+        verify(gameService).takeTurn(any(), captor.capture());
+        assertThat(captor.getValue()).isEqualTo(expectedTileId);
+    }
+
+    private List<String> row(String a, String b, String c) {
+        return Arrays.asList(a, b, c);
+    }
+
+    private List<List<String>> board(List<String> r1, List<String> r2, List<String> r3) {
+        return Arrays.asList(r1, r2, r3);
     }
 }
