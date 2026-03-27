@@ -17,6 +17,8 @@ import static tictactoe.game.BoardUtil.getAllPossibleLines;
 @Service
 public class GameService {
 
+    private static final int BOARD_SIZE = 3;
+
     private final GameRepository gameRepository;
 
     @Autowired
@@ -59,12 +61,25 @@ public class GameService {
      * @param tileId {@link String} in the format "{row index}-{column index}", eg. "0-0" is the top left, "2-2" bottom right.
      */
     public void takeTurn(Game game, String tileId) {
-        if (game.getState() != GameState.IN_PROGRESS) {
+        if (game.getState() != GameState.IN_PROGRESS || game.getNextMove() == null) {
             return;
         }
 
         String[] indices = tileId.split("-");
         if (indices.length != 2) {
+            return;
+        }
+
+        int rowIndex;
+        int columnIndex;
+        try {
+            rowIndex = Integer.parseInt(indices[0]);
+            columnIndex = Integer.parseInt(indices[1]);
+        } catch (NumberFormatException ex) {
+            return;
+        }
+
+        if (!isValidBoardPosition(rowIndex, columnIndex) || !game.getRows().get(rowIndex).get(columnIndex).isEmpty()) {
             return;
         }
 
@@ -76,17 +91,20 @@ public class GameService {
             game.setNextMove(PlayerNumber.PLAYER_1);
         }
 
-        int rowIndex = Integer.parseInt(indices[0]);
-        int columnIndex = Integer.parseInt(indices[1]);
         game.getRows().get(rowIndex).set(columnIndex, tile.toString());
 
         GameState state = evaluateGameState(game.getRows());
         game.setState(state);
         if (state != GameState.IN_PROGRESS) {
-            game.setNextMove(null); // Game over. Null out
+            game.setNextMove(null);
         }
 
         gameRepository.save(game);
+    }
+
+    private boolean isValidBoardPosition(int rowIndex, int columnIndex) {
+        return rowIndex >= 0 && rowIndex < BOARD_SIZE
+                && columnIndex >= 0 && columnIndex < BOARD_SIZE;
     }
 
     /**
@@ -107,25 +125,39 @@ public class GameService {
      * @param rows the rows that make up a game.
      * @return {@link GameState}, PLAYER_1_WIN, PLAYER_2_WIN, IN_PROGRESS, DRAW
      */
-    private GameState evaluateGameState(List<List<String>> rows)
-    {
-        final List<List<String>> lines = getAllPossibleLines(rows);
-
-        for (List<String> line : lines) {
-            String firstTile = line.get(0);
-            if (firstTile.isEmpty())
-                continue;
-
-            if (isAWinner(line, firstTile))
-                return firstTile.equals(BoardTile.X.toString()) ? GameState.PLAYER_1_WIN : GameState.PLAYER_2_WIN;
-
+    private GameState evaluateGameState(List<List<String>> rows) {
+        for (List<String> line : getAllPossibleLines(rows)) {
+            GameState winState = evaluateWinningLine(line);
+            if (winState != null) {
+                return winState;
+            }
         }
 
-        for (List<String> row : rows)
-            if (row.stream().anyMatch(String::isEmpty))
-                return GameState.IN_PROGRESS;
+        return hasEmptyTiles(rows) ? GameState.IN_PROGRESS : GameState.DRAW;
+    }
 
-        return GameState.DRAW; // no connected lines for a winner AND all tiles are taken
+    private GameState evaluateWinningLine(List<String> line) {
+        String firstTile = line.get(0);
+        if (firstTile.isEmpty()) {
+            return null;
+        }
+
+        if (!isAWinner(line, firstTile)) {
+            return null;
+        }
+
+        return firstTile.equals(BoardTile.X.toString())
+                ? GameState.PLAYER_1_WIN
+                : GameState.PLAYER_2_WIN;
+    }
+
+    private boolean hasEmptyTiles(List<List<String>> rows) {
+        for (List<String> row : rows) {
+            if (row.stream().anyMatch(String::isEmpty)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static boolean isAWinner(List<String> line, String firstTile) {

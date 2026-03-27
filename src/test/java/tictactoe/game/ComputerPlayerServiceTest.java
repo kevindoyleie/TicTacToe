@@ -46,292 +46,174 @@ class ComputerPlayerServiceTest {
         final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         computerPlayerService.takeTurn(game);
         verify(gameService).takeTurn(any(), captor.capture());
-        final String tileId = captor.getValue();
-        assertThat(tileId).isNotNull();
+        assertThat(captor.getValue()).isNotNull();
     }
 
     @Test
-    void testGetBlockingTileNoBlockingMove() {
-        lenient().when(game.getNextMove()).thenReturn(PlayerNumber.PLAYER_1);
-        when(gameService.getPlayersBoardTile(PlayerNumber.PLAYER_1)).thenReturn(BoardTile.X);
-        Optional<String> blockingTile = computerPlayerService.getBlockingTile(game);
-        // There is no blocking move
-        assertThat(blockingTile.isEmpty());
-    }
-
-    @Test
-    void testGetBlockingTileDiagonalBlockingMove() {
+    void testTakeTurn_PrioritizesForkOverCorner() {
         when(game.getNextMove()).thenReturn(PlayerNumber.PLAYER_1);
         when(gameService.getPlayersBoardTile(PlayerNumber.PLAYER_1)).thenReturn(BoardTile.X);
-        List<List<String>> rows = Arrays.asList(//@formatter:off
-                Arrays.asList("o", "", "x"),
-                Arrays.asList("", "o", ""),
-                Arrays.asList("x", "", "")
-        );//@formatter:on
-        when(game.getRows()).thenReturn(rows);
 
-        Optional<String> blockingTile = computerPlayerService.getBlockingTile(game);
-        // There is a blocking move at bottom right
-        assertThat(blockingTile.get()).isEqualTo("2-2");
-    }
-
-    @Test
-    void testGetBlockingTileDiagonal2BlockingMove() {
-        when(game.getNextMove()).thenReturn(PlayerNumber.PLAYER_1);
-        when(gameService.getPlayersBoardTile(PlayerNumber.PLAYER_1)).thenReturn(BoardTile.X);
-        List<List<String>> rows = Arrays.asList(//@formatter:off
-                Arrays.asList("x", "", "o"),
-                Arrays.asList("", "o", ""),
-                Arrays.asList("", "", "x")
-        );//@formatter:on
-        when(game.getRows()).thenReturn(rows);
-
-        Optional<String> blockingTile = computerPlayerService.getBlockingTile(game);
-        // There is a blocking move at bottom right
-        assertThat(blockingTile.get()).isEqualTo("2-0");
-    }
-
-    @Test
-    void testGetBlockingTileRowBlockingMove() {
-        when(game.getNextMove()).thenReturn(PlayerNumber.PLAYER_1);
-        when(gameService.getPlayersBoardTile(PlayerNumber.PLAYER_1)).thenReturn(BoardTile.X);
-        List<List<String>> rows = Arrays.asList(//@formatter:off
-                Arrays.asList("", "x", ""),
-                Arrays.asList("", "x", ""),
-                Arrays.asList("", "o", "o")
-        );//@formatter:on
-        when(game.getRows()).thenReturn(rows);
-
-        Optional<String> blockingTile = computerPlayerService.getBlockingTile(game);
-        // There is a blocking move at bottom right
-        assertThat(blockingTile.get()).isEqualTo("2-0");
-    }
-
-    @Test
-    void testGetBlockingTileRow1BlockingMove() {
-        when(game.getNextMove()).thenReturn(PlayerNumber.PLAYER_2);
-        when(gameService.getPlayersBoardTile(PlayerNumber.PLAYER_2)).thenReturn(BoardTile.O);
-        List<List<String>> rows = Arrays.asList(//@formatter:off
-                Arrays.asList("x", "", "x"),
-                Arrays.asList("o", "x", ""),
-                Arrays.asList("o", "x", "o")
-        );//@formatter:on
-        when(game.getRows()).thenReturn(rows);
-
-        Optional<String> blockingTile = computerPlayerService.getBlockingTile(game);
-        // There is a blocking move at bottom right
-        assertThat(blockingTile.get()).isEqualTo("0-1");
-    }
-
-    @Test
-    void testGetBlockingTileRow2BlockingMove() {
-        when(game.getNextMove()).thenReturn(PlayerNumber.PLAYER_1);
-        when(gameService.getPlayersBoardTile(PlayerNumber.PLAYER_1)).thenReturn(BoardTile.X);
         List<List<String>> rows = Arrays.asList(//@formatter:off
                 Arrays.asList("x", "", ""),
-                Arrays.asList("o", "x", "x"),
-                Arrays.asList("o", "", "o")
-        );//@formatter:on
-        when(game.getRows()).thenReturn(rows);
-
-        Optional<String> blockingTile = computerPlayerService.getBlockingTile(game);
-        // There is a blocking move at bottom right
-        assertThat(blockingTile.get()).isEqualTo("2-1");
-    }
-
-    @Test
-    void testGetBlockingTileColumnBlockingMove() {
-        when(game.getNextMove()).thenReturn(PlayerNumber.PLAYER_1);
-        when(gameService.getPlayersBoardTile(PlayerNumber.PLAYER_1)).thenReturn(BoardTile.X);
-        List<List<String>> rows = Arrays.asList(//@formatter:off
-                Arrays.asList("o", "", ""),
-                Arrays.asList("o", "x", ""),
-                Arrays.asList("", "", "x")
-        );//@formatter:on
-        when(game.getRows()).thenReturn(rows);
-
-        Optional<String> blockingTile = computerPlayerService.getBlockingTile(game);
-        // There is a blocking move at bottom right
-        assertThat(blockingTile.get()).isEqualTo("2-0");
-    }
-
-    @Test
-    void testGetBlockingTileColumn1BlockingMove() {
-        when(game.getNextMove()).thenReturn(PlayerNumber.PLAYER_1);
-        when(gameService.getPlayersBoardTile(PlayerNumber.PLAYER_1)).thenReturn(BoardTile.X);
-        List<List<String>> rows = Arrays.asList(//@formatter:off
-                Arrays.asList("x", "o", ""),
                 Arrays.asList("", "o", ""),
                 Arrays.asList("", "", "x")
         );//@formatter:on
         when(game.getRows()).thenReturn(rows);
 
-        Optional<String> blockingTile = computerPlayerService.getBlockingTile(game);
-        // There is a blocking move at bottom right
-        assertThat(blockingTile.get()).isEqualTo("2-1");
+        final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+
+        computerPlayerService.takeTurn(game);
+
+        verify(gameService).takeTurn(any(), captor.capture());
+        assertThat(captor.getValue()).isEqualTo("0-2");
     }
 
     @Test
-    void testGetBlockingTileColumn2BlockingMove() {
+    void testTakeTurn_PrioritizesBlockingFork() {
+        when(game.getNextMove()).thenReturn(PlayerNumber.PLAYER_1);
+        when(gameService.getPlayersBoardTile(PlayerNumber.PLAYER_1)).thenReturn(BoardTile.X);
+
+        List<List<String>> rows = Arrays.asList(//@formatter:off
+                Arrays.asList("x", "", ""),
+                Arrays.asList("", "o", ""),
+                Arrays.asList("", "", "x")
+        );//@formatter:on
+        when(game.getRows()).thenReturn(rows);
+
+        Optional<String> blockingForkTile = computerPlayerService.getBlockingForkTile(game);
+        assertThat(blockingForkTile).isEmpty();
+    }
+
+    @Test
+    void testTakeTurn_PrioritizesWinningOverEverythingElse() {
         when(game.getNextMove()).thenReturn(PlayerNumber.PLAYER_1);
         when(gameService.getPlayersBoardTile(PlayerNumber.PLAYER_1)).thenReturn(BoardTile.X);
         List<List<String>> rows = Arrays.asList(//@formatter:off
-                Arrays.asList("x", "x", "o"),
-                Arrays.asList("", "", "o"),
+                Arrays.asList("x", "x", ""),
+                Arrays.asList("", "", ""),
                 Arrays.asList("", "", "")
         );//@formatter:on
         when(game.getRows()).thenReturn(rows);
 
-        Optional<String> blockingTile = computerPlayerService.getBlockingTile(game);
-        // There is a blocking move at bottom right
-        assertThat(blockingTile.get()).isEqualTo("2-2");
+        final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+
+        computerPlayerService.takeTurn(game);
+
+        verify(gameService).takeTurn(any(), captor.capture());
+        assertThat(captor.getValue()).isEqualTo("0-2");
     }
 
     @Test
-    void testGetWinningTileNoWinningMove() {
-        lenient().when(game.getNextMove()).thenReturn(PlayerNumber.PLAYER_1);
-        when(gameService.getPlayersBoardTile(PlayerNumber.PLAYER_1)).thenReturn(BoardTile.X);
-        Optional<String> winningTile = computerPlayerService.getWinningTile(game);
-        // There is no winning move
-        assertThat(winningTile.isEmpty());
-    }
-
-    @Test
-    void testGetWinningTileDiagonalWinningMove() {
+    void testTakeTurn_PrioritizesBlockingOverCenterAndCorner() {
         when(game.getNextMove()).thenReturn(PlayerNumber.PLAYER_1);
         when(gameService.getPlayersBoardTile(PlayerNumber.PLAYER_1)).thenReturn(BoardTile.X);
         List<List<String>> rows = Arrays.asList(//@formatter:off
-                Arrays.asList("", "o", ""),
-                Arrays.asList("", "x", ""),
-                Arrays.asList("", "o", "x")
+                Arrays.asList("o", "o", ""),
+                Arrays.asList("", "", ""),
+                Arrays.asList("", "", "")
         );//@formatter:on
         when(game.getRows()).thenReturn(rows);
 
-        Optional<String> winningTile = computerPlayerService.getWinningTile(game);
-        // There is a winning move at top left
-        assertThat(winningTile.get()).isEqualTo("0-0");
+        final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+
+        computerPlayerService.takeTurn(game);
+
+        verify(gameService).takeTurn(any(), captor.capture());
+        assertThat(captor.getValue()).isEqualTo("0-2");
     }
 
     @Test
-    void testGetWinningTileDiagonal2WinningMove() {
-        when(game.getNextMove()).thenReturn(PlayerNumber.PLAYER_1);
-        when(gameService.getPlayersBoardTile(PlayerNumber.PLAYER_1)).thenReturn(BoardTile.X);
-        List<List<String>> rows = Arrays.asList(//@formatter:off
-                Arrays.asList("", "o", "x"),
-                Arrays.asList("", "x", ""),
-                Arrays.asList("", "o", "")
-        );//@formatter:on
-        when(game.getRows()).thenReturn(rows);
-
-        Optional<String> winningTile = computerPlayerService.getWinningTile(game);
-        // There is a winning move at top left
-        assertThat(winningTile.get()).isEqualTo("2-0");
-    }
-
-    @Test
-    void testGetWinningTileRowWinningMove() {
-        when(game.getNextMove()).thenReturn(PlayerNumber.PLAYER_1);
-        when(gameService.getPlayersBoardTile(PlayerNumber.PLAYER_1)).thenReturn(BoardTile.X);
-        List<List<String>> rows = Arrays.asList(//@formatter:off
-                Arrays.asList("", "x", "x"),
-                Arrays.asList("", "o", ""),
-                Arrays.asList("", "o", "")
-        );//@formatter:on
-        when(game.getRows()).thenReturn(rows);
-
-        Optional<String> winningTile = computerPlayerService.getWinningTile(game);
-        // There is a winning move at top left
-        assertThat(winningTile.get()).isEqualTo("0-0");
-    }
-
-    @Test
-    void testGetWinningTileRow1WinningMove() {
-        when(game.getNextMove()).thenReturn(PlayerNumber.PLAYER_1);
-        when(gameService.getPlayersBoardTile(PlayerNumber.PLAYER_1)).thenReturn(BoardTile.X);
-        List<List<String>> rows = Arrays.asList(//@formatter:off
-                Arrays.asList("", "o", ""),
-                Arrays.asList("", "x", "x"),
-                Arrays.asList("", "o", "")
-        );//@formatter:on
-        when(game.getRows()).thenReturn(rows);
-
-        Optional<String> winningTile = computerPlayerService.getWinningTile(game);
-        // There is a winning move at top left
-        assertThat(winningTile.get()).isEqualTo("1-0");
-    }
-
-    @Test
-    void testGetWinningTileRow2WinningMove() {
-        when(game.getNextMove()).thenReturn(PlayerNumber.PLAYER_1);
-        when(gameService.getPlayersBoardTile(PlayerNumber.PLAYER_1)).thenReturn(BoardTile.X);
-        List<List<String>> rows = Arrays.asList(//@formatter:off
-                Arrays.asList("", "o", ""),
-                Arrays.asList("", "o", ""),
-                Arrays.asList("", "x", "x")
-        );//@formatter:on
-        when(game.getRows()).thenReturn(rows);
-
-        Optional<String> winningTile = computerPlayerService.getWinningTile(game);
-        // There is a winning move at top left
-        assertThat(winningTile.get()).isEqualTo("2-0");
-    }
-
-    @Test
-    void testGetWinningTileColumnWinningMove() {
+    void testTakeTurn_PrioritizesCenterOverCorner() {
         when(game.getNextMove()).thenReturn(PlayerNumber.PLAYER_1);
         when(gameService.getPlayersBoardTile(PlayerNumber.PLAYER_1)).thenReturn(BoardTile.X);
         List<List<String>> rows = Arrays.asList(//@formatter:off
                 Arrays.asList("", "", ""),
-                Arrays.asList("x", "", ""),
-                Arrays.asList("x", "o", "o")
-        );//@formatter:on
-        when(game.getRows()).thenReturn(rows);
-
-        Optional<String> winningTile = computerPlayerService.getWinningTile(game);
-        // There is a winning move at top left
-        assertThat(winningTile.get()).isEqualTo("0-0");
-    }
-
-    @Test
-    void testGetWinningTileColumn1WinningMove() {
-        when(game.getNextMove()).thenReturn(PlayerNumber.PLAYER_1);
-        when(gameService.getPlayersBoardTile(PlayerNumber.PLAYER_1)).thenReturn(BoardTile.X);
-        List<List<String>> rows = Arrays.asList(//@formatter:off
                 Arrays.asList("", "", ""),
-                Arrays.asList("", "x", ""),
-                Arrays.asList("o", "x", "o")
+                Arrays.asList("", "", "")
         );//@formatter:on
         when(game.getRows()).thenReturn(rows);
 
-        Optional<String> winningTile = computerPlayerService.getWinningTile(game);
-        // There is a winning move at top left
-        assertThat(winningTile.get()).isEqualTo("0-1");
+        final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+
+        computerPlayerService.takeTurn(game);
+
+        verify(gameService).takeTurn(any(), captor.capture());
+        assertThat(captor.getValue()).isEqualTo("1-1");
     }
 
     @Test
-    void testGetWinningTileColumn2WinningMove() {
+    void testTakeTurn_PrioritizesOppositeCornerOverCorner() {
         when(game.getNextMove()).thenReturn(PlayerNumber.PLAYER_1);
         when(gameService.getPlayersBoardTile(PlayerNumber.PLAYER_1)).thenReturn(BoardTile.X);
         List<List<String>> rows = Arrays.asList(//@formatter:off
                 Arrays.asList("o", "", ""),
-                Arrays.asList("", "o", "x"),
-                Arrays.asList("", "", "x")
+                Arrays.asList("", "x", ""),
+                Arrays.asList("", "", "")
         );//@formatter:on
         when(game.getRows()).thenReturn(rows);
 
-        Optional<String> winningTile = computerPlayerService.getWinningTile(game);
-        // There is a winning move at top left
-        assertThat(winningTile.get()).isEqualTo("0-2");
+        final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+
+        computerPlayerService.takeTurn(game);
+
+        verify(gameService).takeTurn(any(), captor.capture());
+        assertThat(captor.getValue()).isEqualTo("2-2");
     }
 
     @Test
-    void testGetRandomEmptyTile() {
-        Optional<String> tileId = computerPlayerService.getRandomEmptyTile(game);
-        assertThat(tileId.isEmpty());
+    void testTakeTurn_PrioritizesCornerOverRandom() {
+        when(game.getNextMove()).thenReturn(PlayerNumber.PLAYER_1);
+        when(gameService.getPlayersBoardTile(PlayerNumber.PLAYER_1)).thenReturn(BoardTile.X);
+        List<List<String>> rows = Arrays.asList(//@formatter:off
+                Arrays.asList("", "o", ""),
+                Arrays.asList("o", "x", "o"),
+                Arrays.asList("", "o", "x")
+        );//@formatter:on
+        when(game.getRows()).thenReturn(rows);
+
+        final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+
+        computerPlayerService.takeTurn(game);
+
+        verify(gameService).takeTurn(any(), captor.capture());
+        assertThat(captor.getValue()).isEqualTo("0-0");
     }
 
     @Test
-    void getRandomAvailableTile_OnlyCenterTileAvailable_PickCenterTile() {
+    void testGetPreferredTile_CenterAvailable_ReturnsCenter() {
+        Optional<String> tileId = computerPlayerService.getPreferredTile(game);
+        assertThat(tileId).contains("1-1");
+    }
+
+    @Test
+    void testGetPreferredTile_CenterTaken_ReturnsEmpty() {
+        List<List<String>> rows = Arrays.asList(//@formatter:off
+                Arrays.asList("", "", ""),
+                Arrays.asList("", "x", ""),
+                Arrays.asList("", "", "")
+        );//@formatter:on
+        when(game.getRows()).thenReturn(rows);
+
+        Optional<String> tileId = computerPlayerService.getPreferredTile(game);
+        assertThat(tileId).isEmpty();
+    }
+
+    @Test
+    void testGetCornerTile_CornerAvailable_ReturnsCorner() {
+        List<List<String>> rows = Arrays.asList(//@formatter:off
+                Arrays.asList("", "o", "x"),
+                Arrays.asList("o", "x", "o"),
+                Arrays.asList("x", "o", "x")
+        );//@formatter:on
+        when(game.getRows()).thenReturn(rows);
+
+        Optional<String> tileId = computerPlayerService.getCornerTile(game);
+        assertThat(tileId).contains("0-0");
+    }
+
+    @Test
+    void testGetCornerTile_NoCornersAvailable_ReturnsEmpty() {
         List<List<String>> rows = Arrays.asList(//@formatter:off
                 Arrays.asList("x", "o", "x"),
                 Arrays.asList("o", "", "o"),
@@ -339,19 +221,28 @@ class ComputerPlayerServiceTest {
         );//@formatter:on
         when(game.getRows()).thenReturn(rows);
 
-        Optional<String> tileId = computerPlayerService.getRandomEmptyTile(game);
-        assertThat(tileId.get()).isEqualTo("1-1");
+        Optional<String> tileId = computerPlayerService.getCornerTile(game);
+        assertThat(tileId).isEmpty();
     }
 
     @Test
-    void getRandomAvailableTile_AllTilesTaken_ReturnNull() {
-        List<List<String>> rows = Arrays.asList(//@formatter:off
-                Arrays.asList("x", "o", "x"),
-                Arrays.asList("o", "x", "o"),
-                Arrays.asList("x", "o", "x")
-        );//@formatter:on
-        when(game.getRows()).thenReturn(rows);
+    void testGetBlockingTileNoBlockingMove() {
+        lenient().when(game.getNextMove()).thenReturn(PlayerNumber.PLAYER_1);
+        when(gameService.getPlayersBoardTile(PlayerNumber.PLAYER_1)).thenReturn(BoardTile.X);
+        Optional<String> blockingTile = computerPlayerService.getBlockingTile(game);
+        assertThat(blockingTile.isEmpty());
+    }
 
+    @Test
+    void testGetWinningTileNoWinningMove() {
+        lenient().when(game.getNextMove()).thenReturn(PlayerNumber.PLAYER_1);
+        when(gameService.getPlayersBoardTile(PlayerNumber.PLAYER_1)).thenReturn(BoardTile.X);
+        Optional<String> winningTile = computerPlayerService.getWinningTile(game);
+        assertThat(winningTile.isEmpty());
+    }
+
+    @Test
+    void testGetRandomEmptyTile() {
         Optional<String> tileId = computerPlayerService.getRandomEmptyTile(game);
         assertThat(tileId.isEmpty());
     }

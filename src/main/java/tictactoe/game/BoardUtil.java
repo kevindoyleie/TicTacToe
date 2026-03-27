@@ -18,7 +18,6 @@ class BoardUtil {
             List<String> row = new ArrayList<>();
             for (int columnIndex = 0; columnIndex < NUMBER_COLUMNS; columnIndex++) {
                 row.add(BoardTile.EMPTY.toString());
-
             }
             rows.add(row);
         }
@@ -39,37 +38,41 @@ class BoardUtil {
     public static List<List<String>> getAllPossibleLines(List<List<String>> gameRows) {
         final List<List<String>> allPossibleLines = new ArrayList<>();
 
-        // add all rows
-        for (int rowIndex = 0; rowIndex < NUMBER_ROWS; rowIndex++)
-            allPossibleLines.add(gameRows.get(rowIndex));
-
-        // add all columns
-        for (int columnIndex = 0; columnIndex < NUMBER_COLUMNS; columnIndex++) {
-            List<String> columnLine = new ArrayList<>();
-            for (List<String> row : gameRows)
-                columnLine.add(row.get(columnIndex));
-            allPossibleLines.add(columnLine);
-        }
-
-        // add all diagonals
-        // add all diagonals
-        List<String> diagonal1 = Arrays.asList(gameRows.get(0).get(0), gameRows.get(1).get(1), gameRows.get(2).get(2));
-        allPossibleLines.add(diagonal1);
-
-        List<String> diagonal2 = Arrays.asList(gameRows.get(0).get(2), gameRows.get(1).get(1), gameRows.get(2).get(0));
-        allPossibleLines.add(diagonal2);
+        allPossibleLines.addAll(gameRows);
+        allPossibleLines.addAll(getAllColumns(gameRows));
+        allPossibleLines.add(getDiagonal1(gameRows));
+        allPossibleLines.add(getDiagonal2(gameRows));
 
         return allPossibleLines;
     }
 
     public static List<List<String>> getAllColumns(List<List<String>> gameRows) {
         final List<List<String>> allColumns = new ArrayList<>();
-        for (int columnIndex = 0; columnIndex < 3; columnIndex++) {
+
+        for (int columnIndex = 0; columnIndex < NUMBER_COLUMNS; columnIndex++) {
             List<String> columnLine = new ArrayList<>();
-            for (List<String> row : gameRows)
+            for (List<String> row : gameRows) {
                 columnLine.add(row.get(columnIndex));
+            }
             allColumns.add(columnLine);
         }
+
         return allColumns;
+    }
+
+    private static List<String> getDiagonal1(List<List<String>> gameRows) {
+        return Arrays.asList(
+                gameRows.get(0).get(0),
+                gameRows.get(1).get(1),
+                gameRows.get(2).get(2)
+        );
+    }
+
+    private static List<String> getDiagonal2(List<List<String>> gameRows) {
+        return Arrays.asList(
+                gameRows.get(0).get(2),
+                gameRows.get(1).get(1),
+                gameRows.get(2).get(0)
+        );
     }
 }

@@ -83,23 +83,57 @@ class GameServiceTest {
 
         assertThat(game.getNextMove()).isEqualTo(PlayerNumber.PLAYER_2);
         assertThat(game.getState()).isEqualTo(GameState.IN_PROGRESS);
-        assertRows(//@formatter:off
+        assertRows(
                 game,
                 "", "", "",
                 "", "x", "",
                 "", "", ""
-        );//@formatter:on
+        );
 
         service.takeTurn(game, "0-1");
 
         assertThat(game.getNextMove()).isEqualTo(PlayerNumber.PLAYER_1);
         assertThat(game.getState()).isEqualTo(GameState.IN_PROGRESS);
-        assertRows(//@formatter:off
+        assertRows(
                 game,
                 "", "o", "",
                 "", "x", "",
                 "", "", ""
-        );//@formatter:on
+        );
+    }
+
+    @Test
+    void takeTurn_InvalidTileId_DoesNothing() {
+        Game game = service.create(new AppUser(), true);
+
+        service.takeTurn(game, "invalid");
+
+        assertThat(game.getNextMove()).isEqualTo(PlayerNumber.PLAYER_1);
+        assertThat(game.getState()).isEqualTo(GameState.IN_PROGRESS);
+        assertRows(
+                game,
+                "", "", "",
+                "", "", "",
+                "", "", ""
+        );
+        verify(mockRepository).save(any());
+    }
+
+    @Test
+    void takeTurn_AlreadyOccupiedTile_DoesNothing() {
+        Game game = service.create(new AppUser(), true);
+        game.getRows().get(1).set(1, "x");
+
+        service.takeTurn(game, "1-1");
+
+        assertThat(game.getNextMove()).isEqualTo(PlayerNumber.PLAYER_1);
+        assertThat(game.getState()).isEqualTo(GameState.IN_PROGRESS);
+        assertRows(
+                game,
+                "", "", "",
+                "", "x", "",
+                "", "", ""
+        );
     }
 
     @Test
@@ -111,12 +145,12 @@ class GameServiceTest {
 
         assertThat(game.getNextMove()).isNull();
         assertThat(game.getState()).isEqualTo(GameState.PLAYER_1_WIN);
-        assertRows(//@formatter:off
+        assertRows(
                 game,
                 "x", "x", "x",
                 "", "", "",
                 "", "", ""
-        );//@formatter:on
+        );
     }
 
     @Test
@@ -126,8 +160,8 @@ class GameServiceTest {
         game.getRows().set(1, Arrays.asList("", "o", ""));
         game.getRows().set(2, Arrays.asList("", "", ""));
 
-        service.takeTurn(game, "1-0"); // player 1 marks X
-        service.takeTurn(game, "2-0"); // player 2 marks O and wins
+        service.takeTurn(game, "1-0");
+        service.takeTurn(game, "2-0");
 
         assertThat(game.getNextMove()).isNull();
         assertThat(game.getState()).isEqualTo(GameState.PLAYER_2_WIN);
